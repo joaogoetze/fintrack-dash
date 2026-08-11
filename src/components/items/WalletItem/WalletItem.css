@@ -1,0 +1,33 @@
+.wallet-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wallet-card-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.wallet-icon {
+  color: var(--brand-primary);
+  background: rgba(16, 185, 129, 0.1);
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+}
+.wallet-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.wallet-card-value {
+  font-size: 18px;
+  color: var(--text-primary);
+  font-weight: 700;
+}

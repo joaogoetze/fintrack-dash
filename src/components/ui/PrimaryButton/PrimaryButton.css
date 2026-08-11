@@ -1,0 +1,14 @@
+.primary-button {
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+.primary-button:hover {
+  background: var(--brand-primary-hover);
+}

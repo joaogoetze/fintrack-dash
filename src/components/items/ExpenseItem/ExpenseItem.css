@@ -1,0 +1,49 @@
+.expense-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+.expense-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.expense-card-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.expense-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.expense-icon {
+  color: var(--error-color);
+}
+.expense-card-tag {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.expense-card-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.expense-card-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.expense-card-value {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
