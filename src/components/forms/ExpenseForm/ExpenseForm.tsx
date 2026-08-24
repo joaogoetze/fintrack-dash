@@ -13,6 +13,7 @@ function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [dueDate, setDueDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [isRecurring, setIsRecurring] = useState(false);
   const [walletId, setWalletId] = useState<number | "">("");
   const [wallets, setWallets] = useState<{ id: number; name: string; value: number }[]>([]);
@@ -53,6 +54,7 @@ function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
         name: name.trim(),
         value,
         date,
+        due_date: isRecurring ? dueDate : undefined,
         is_recurring: isRecurring,
         wallet_id: walletId || undefined,
       };
@@ -143,6 +145,18 @@ function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
           Despesa recorrente
         </label>
       </div>
+
+      {isRecurring && 
+        <div className="form-field">
+          <label htmlFor="expense-date">Data de vencimento</label>
+          <input
+            id="due-date"
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+        </div>
+      }
 
       <div className="form-actions">
         <button type="button" className="btn-cancel" onClick={onClose}>

@@ -4,6 +4,7 @@ import { ArrowDownRight } from "lucide-react";
 import "./ExpenseItem.css";
 
 function ExpenseItem({ expense }: { expense: Expense }) {
+  
   return (
     <div className="expense-card">
       <div className="expense-card-header">
@@ -20,6 +21,10 @@ function ExpenseItem({ expense }: { expense: Expense }) {
       <div className="expense-card-info">
         <span className="expense-card-label">Data</span>
         <span className="expense-card-value">{formatDate(expense.date)}</span>
+      </div>
+      <div className="expense-card-info">
+        <span className="expense-card-label">Data para pagamento</span>
+        <span className="expense-card-value">{formatDate(expense.due_date) || "Nenhuma data"}</span>
       </div>
       <div className="expense-card-info">
         <span className="expense-card-label">Carteira</span>
