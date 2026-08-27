@@ -13,6 +13,7 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [dueDate, setDueDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [isRecurring, setIsRecurring] = useState(false);
   const [walletId, setWalletId] = useState<number | "">("");
   const [wallets, setWallets] = useState<{ id: number; name: string; value: number }[]>([]);
@@ -52,6 +53,7 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
         name: name.trim(),
         value: numericValue,
         date,
+        due_date: isRecurring ? dueDate : undefined,
         is_recurring: isRecurring,
         wallet_id: walletId || undefined,
       };
@@ -142,6 +144,18 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
           Receita recorrente
         </label>
       </div>
+
+      {isRecurring && 
+        <div className="form-field">
+          <label htmlFor="income-due-date">Data de vencimento</label>
+          <input
+            id="income-due-date"
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+        </div>
+      }
 
       <div className="form-actions">
         <button type="button" className="btn-cancel" onClick={onClose}>

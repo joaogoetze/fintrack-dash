@@ -8,6 +8,7 @@ export function createIncome(data: {
     name: string;
     value: number;
     date: string;
+    due_date?: string;
     is_recurring: boolean;
     wallet_id?: number;
 }) {

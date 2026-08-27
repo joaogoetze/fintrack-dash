@@ -22,6 +22,10 @@ function IncomeItem({ income }: { income: Income }) {
         <span className="income-card-value">{formatDate(income.date)}</span>
       </div>
       <div className="income-card-info">
+        <span className="income-card-label">Data de vencimento</span>
+        <span className="income-card-value">{formatDate(income.due_date) || "Nenhuma data"}</span>
+      </div>
+      <div className="income-card-info">
         <span className="income-card-label">Carteira</span>
         <span className="income-card-value">
           {income.wallet_name || "Nenhuma carteira selecionada"}
