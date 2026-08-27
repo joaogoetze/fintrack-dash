@@ -6,6 +6,9 @@
   box-shadow: var(--shadow-sm);
   margin-bottom: 12px;
 }
+.expense-card.unpaid {
+  opacity: 0.6;
+}
 .expense-card-header {
   display: flex;
   align-items: center;
@@ -25,14 +28,6 @@
 .expense-icon {
   color: var(--error-color);
 }
-.expense-card-tag {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--error-color);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
 .expense-card-info {
   display: flex;
   justify-content: space-between;
@@ -46,4 +41,25 @@
   font-size: 14px;
   color: var(--text-primary);
   font-weight: 500;
+}
+.expense-card-paid {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+.paid-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.paid-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--success-color);
+}
+.paid-checkbox svg {
+  color: var(--success-color);
 }

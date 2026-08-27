@@ -39,7 +39,7 @@ function Incomes() {
 
             {incomes.length > 0 ? (
                 incomes.map(income =>
-                    <IncomeItem key={income.id} income={income} />
+                    <IncomeItem key={income.id} income={income} onUpdate={loadIncomes} />
                 )
             ) : (
                 <div className="empty-state">Nenhuma receita</div>

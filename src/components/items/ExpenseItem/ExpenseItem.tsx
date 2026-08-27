@@ -1,18 +1,37 @@
 import type { Expense } from "../../../types/Expense";
 import { formatDate } from "../../../utils/formatters";
-import { ArrowDownRight } from "lucide-react";
+import { ArrowDownRight, CheckSquare } from "lucide-react";
+import { updateExpensePaid } from "../../../api/expenses";
+import { useState } from "react";
 import "./ExpenseItem.css";
 
-function ExpenseItem({ expense }: { expense: Expense }) {
-  
+interface ExpenseItemProps {
+  expense: Expense;
+  onUpdate?: () => void;
+}
+
+function ExpenseItem({ expense, onUpdate }: ExpenseItemProps) {
+  const [loading, setLoading] = useState(false);
+
+  const handlePaidChange = async (newPaid: boolean) => {
+    setLoading(true);
+    try {
+      await updateExpensePaid(expense.id, newPaid);
+      onUpdate?.();
+    } catch (err) {
+      console.error("Erro ao atualizar status de pagamento:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="expense-card">
+    <div className={`expense-card ${!expense.paid ? "unpaid" : ""}`}>
       <div className="expense-card-header">
         <div className="expense-card-name-wrapper">
           <ArrowDownRight size={18} className="expense-icon" />
           <span className="expense-card-name">{expense.name}</span>
         </div>
-        {expense.is_recurrent && <span className="expense-card-tag">Recorrente</span>}
       </div>
       <div className="expense-card-info">
         <span className="expense-card-label">Valor</span>
@@ -31,6 +50,18 @@ function ExpenseItem({ expense }: { expense: Expense }) {
         <span className="expense-card-value">
           {expense.wallet_name || "Nenhuma carteira selecionada"}
         </span>
+      </div>
+      <div className="expense-card-paid">
+        <label className="paid-checkbox">
+          <input
+            type="checkbox"
+            checked={expense.paid}
+            onChange={(e) => handlePaidChange(e.target.checked)}
+            disabled={loading}
+          />
+          <CheckSquare size={18} />
+          <span>Pago</span>
+        </label>
       </div>
     </div>
   );

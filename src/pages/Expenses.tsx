@@ -39,7 +39,7 @@ function Expenses() {
 
       {expenses.length > 0 ? (
         expenses.map(expense =>
-          <ExpenseItem key={expense.id} expense={expense} />
+          <ExpenseItem key={expense.id} expense={expense} onUpdate={loadExpenses} />
         )
       ) : (
         <div className="empty-state">Nenhuma despesa</div>

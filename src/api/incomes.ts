@@ -14,3 +14,7 @@ export function createIncome(data: {
 }) {
     return api.post("/incomes", data);
 }
+
+export function updateIncomePaid(id: number, paid: boolean) {
+    return api.put(`/incomes/${id}/paid`, { paid });
+}

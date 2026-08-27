@@ -60,8 +60,9 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
 
       await createIncome(incomeData);
 
-      // Atualizar saldo da wallet se selecionada
-      if (walletId) {
+      // Atualizar saldo da wallet se selecionada e NÃO for recorrente
+      // Recorrentes são criadas como não pagas, wallet só atualiza ao marcar como pago
+      if (walletId && !isRecurring) {
         const wallet = wallets.find(w => w.id === walletId);
         if (wallet) {
           // Receita adiciona ao saldo
