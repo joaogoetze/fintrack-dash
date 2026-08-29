@@ -1,5 +1,5 @@
 import type { Income } from "../../../types/Income";
-import { formatDate } from "../../../utils/formatters";
+import { formatCurrency, formatDate } from "../../../utils/formatters";
 import { ArrowUpRight, CheckSquare } from "lucide-react";
 import { updateIncomePaid } from "../../../api/incomes";
 import { useState } from "react";
@@ -50,42 +50,44 @@ function IncomeItem({ income, onUpdate }: IncomeItemProps) {
   };
 
   return (
-    <div className={`income-card ${!income.paid ? "unpaid" : ""}`}>
-      <div className="income-card-header">
-        <div className="income-card-name-wrapper">
-          <ArrowUpRight size={18} className="income-icon" />
-          <span className="income-card-name">{income.name}</span>
+    <>
+      <div className={`income-card ${!income.paid ? "unpaid" : ""}`}>
+        <div className="income-card-header">
+          <div className="income-card-name-wrapper">
+            <ArrowUpRight size={18} className="income-icon" />
+            <span className="income-card-name">{income.name}</span>
+          </div>
         </div>
-      </div>
-      <div className="income-card-info">
-        <span className="income-card-label">Valor</span>
-        <span className="income-card-value">{income.amount}</span>
-      </div>
-      <div className="income-card-info">
-        <span className="income-card-label">Data</span>
-        <span className="income-card-value">{formatDate(income.date)}</span>
-      </div>
-      <div className="income-card-info">
-        <span className="income-card-label">Data de vencimento</span>
-        <span className="income-card-value">{formatDate(income.due_date) || "Nenhuma data"}</span>
-      </div>
-      <div className="income-card-info">
-        <span className="income-card-label">Carteira</span>
-        <span className="income-card-value">
-          {income.wallet_name || "Nenhuma carteira selecionada"}
-        </span>
-      </div>
-      <div className="income-card-paid">
-        <label className="paid-checkbox">
-          <input
-            type="checkbox"
-            checked={income.paid}
-            onChange={(e) => handlePaidChange(e.target.checked)}
-            disabled={loading}
-          />
-          <CheckSquare size={18} />
-          <span>Pago</span>
-        </label>
+        <div className="income-card-info">
+          <span className="income-card-label">Valor</span>
+          <span className="income-card-value">{formatCurrency(income.amount)}</span>
+        </div>
+        <div className="income-card-info">
+          <span className="income-card-label">Data</span>
+          <span className="income-card-value">{formatDate(income.date)}</span>
+        </div>
+        <div className="income-card-info">
+          <span className="income-card-label">Data de vencimento</span>
+          <span className="income-card-value">{formatDate(income.due_date) || "Nenhuma data"}</span>
+        </div>
+        <div className="income-card-info">
+          <span className="income-card-label">Carteira</span>
+          <span className="income-card-value">
+            {income.wallet_name || "Nenhuma carteira selecionada"}
+          </span>
+        </div>
+        <div className="income-card-paid">
+          <label className="paid-checkbox">
+            <input
+              type="checkbox"
+              checked={income.paid}
+              onChange={(e) => handlePaidChange(e.target.checked)}
+              disabled={loading}
+            />
+            <CheckSquare size={18} />
+            <span>Pago</span>
+          </label>
+        </div>
       </div>
 
       <SelectWalletModal
@@ -93,7 +95,7 @@ function IncomeItem({ income, onUpdate }: IncomeItemProps) {
         onClose={() => setIsWalletModalOpen(false)}
         onConfirm={handleWalletConfirm}
       />
-    </div>
+    </>
   );
 }
 
