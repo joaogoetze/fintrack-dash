@@ -3,6 +3,7 @@ import { formatDate } from "../../../utils/formatters";
 import { ArrowDownRight, CheckSquare } from "lucide-react";
 import { updateExpensePaid } from "../../../api/expenses";
 import { useState } from "react";
+import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
 import "./ExpenseItem.css";
 
 interface ExpenseItemProps {
@@ -12,14 +13,37 @@ interface ExpenseItemProps {
 
 function ExpenseItem({ expense, onUpdate }: ExpenseItemProps) {
   const [loading, setLoading] = useState(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
+    if (newPaid && !expense.wallet_id) {
+      setIsWalletModalOpen(true);
+      return;
+    }
+
     setLoading(true);
     try {
-      await updateExpensePaid(expense.id, newPaid);
+      await updateExpensePaid(
+        expense.id,
+        newPaid,
+        expense.wallet_id,
+        Number(expense.amount)
+      );
       onUpdate?.();
     } catch (err) {
       console.error("Erro ao atualizar status de pagamento:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWalletConfirm = async (walletId: number) => {
+    setLoading(true);
+    try {
+      await updateExpensePaid(expense.id, true, walletId, Number(expense.amount));
+      onUpdate?.();
+    } catch (err) {
+      console.error("Erro ao marcar como pago:", err);
     } finally {
       setLoading(false);
     }
@@ -63,6 +87,12 @@ function ExpenseItem({ expense, onUpdate }: ExpenseItemProps) {
           <span>Pago</span>
         </label>
       </div>
+
+      <SelectWalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onConfirm={handleWalletConfirm}
+      />
     </div>
   );
 }

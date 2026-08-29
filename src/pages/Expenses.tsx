@@ -15,7 +15,7 @@ function Expenses() {
   const loadExpenses = useCallback(async () => {
     const data = await getExpenses(activeMonth);
     setExpenses(data);
-  }, []);
+  }, [activeMonth]);
 
   useEffect(() => {
     getExpenses(activeMonth).then(setExpenses);

@@ -1,8 +1,9 @@
 import type { Income } from "../../../types/Income";
-import { formatCurrency, formatDate } from "../../../utils/formatters";
+import { formatDate } from "../../../utils/formatters";
 import { ArrowUpRight, CheckSquare } from "lucide-react";
 import { updateIncomePaid } from "../../../api/incomes";
 import { useState } from "react";
+import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
 import "./IncomeItem.css";
 
 interface IncomeItemProps {
@@ -12,14 +13,37 @@ interface IncomeItemProps {
 
 function IncomeItem({ income, onUpdate }: IncomeItemProps) {
   const [loading, setLoading] = useState(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
+    if (newPaid && !income.wallet_id) {
+      setIsWalletModalOpen(true);
+      return;
+    }
+
     setLoading(true);
     try {
-      await updateIncomePaid(income.id, newPaid);
+      await updateIncomePaid(
+        income.id,
+        newPaid,
+        income.wallet_id,
+        Number(income.amount)
+      );
       onUpdate?.();
     } catch (err) {
       console.error("Erro ao atualizar status de pagamento:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWalletConfirm = async (walletId: number) => {
+    setLoading(true);
+    try {
+      await updateIncomePaid(income.id, true, walletId, Number(income.amount));
+      onUpdate?.();
+    } catch (err) {
+      console.error("Erro ao marcar como pago:", err);
     } finally {
       setLoading(false);
     }
@@ -35,7 +59,7 @@ function IncomeItem({ income, onUpdate }: IncomeItemProps) {
       </div>
       <div className="income-card-info">
         <span className="income-card-label">Valor</span>
-        <span className="income-card-value">{formatCurrency(income.value)}</span>
+        <span className="income-card-value">{income.amount}</span>
       </div>
       <div className="income-card-info">
         <span className="income-card-label">Data</span>
@@ -63,6 +87,12 @@ function IncomeItem({ income, onUpdate }: IncomeItemProps) {
           <span>Pago</span>
         </label>
       </div>
+
+      <SelectWalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onConfirm={handleWalletConfirm}
+      />
     </div>
   );
 }

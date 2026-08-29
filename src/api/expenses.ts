@@ -16,6 +16,6 @@ export function createExpense(data: {
     return api.post("/expenses", data);
 }
 
-export function updateExpensePaid(id: number, paid: boolean) {
-    return api.put(`/expenses/${id}/paid`, { paid });
+export function updateExpensePaid(id: number, paid: boolean, wallet_id?: number, value?: number) {
+    return api.put(`/expenses/${id}/paid`, { paid, wallet_id, value });
 }

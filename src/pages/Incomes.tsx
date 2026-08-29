@@ -15,7 +15,7 @@ function Incomes() {
     const loadIncomes = useCallback(async () => {
         const data = await getIncomes(activeMonth);
         setIncomes(data);
-    }, []);
+    }, [activeMonth]);
 
     useEffect(() => {
         getIncomes(activeMonth).then(setIncomes);
