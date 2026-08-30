@@ -37,7 +37,7 @@ function Wallets() {
 
             {wallets.length > 0 ? (
                 wallets.map(wallet =>
-                    <WalletItem key={wallet.id} wallet={wallet} />
+                    <WalletItem key={wallet.id} wallet={wallet} onUpdate={loadWallets} />
                 )
             ) : (
                 <div className="empty-state">Nenhuma carteira</div>

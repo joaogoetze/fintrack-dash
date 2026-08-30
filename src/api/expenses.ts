@@ -19,3 +19,7 @@ export function createExpense(data: {
 export function updateExpensePaid(id: number, paid: boolean, wallet_id?: number, value?: number) {
     return api.put(`/expenses/${id}/paid`, { paid, wallet_id, value });
 }
+
+export function deleteExpense(id: number) {
+    return api.delete(`/expenses/${id}`);
+}

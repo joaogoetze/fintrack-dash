@@ -18,3 +18,7 @@ export function createIncome(data: {
 export function updateIncomePaid(id: number, paid: boolean, wallet_id?: number, value?: number) {
     return api.put(`/incomes/${id}/paid`, { paid, wallet_id, value });
 }
+
+export function deleteIncome(id: number) {
+    return api.delete(`/incomes/${id}`);
+}

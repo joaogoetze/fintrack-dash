@@ -28,6 +28,23 @@
 .income-icon {
   color: var(--brand-primary);
 }
+.item-delete-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.item-delete-btn:hover {
+  color: var(--error-color);
+}
+.item-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .income-card-info {
   display: flex;
   justify-content: space-between;
