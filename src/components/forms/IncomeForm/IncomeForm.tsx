@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react";
 import "./IncomeForm.css";
-import { createIncome } from "../../../api/incomes";
-import { getWallets, updateWallet } from "../../../api/wallets";
+import { createIncome, updateIncome } from "../../../api/incomes";
+import { getWallets } from "../../../api/wallets";
 import SelectField from "../../ui/SelectField/SelectField";
+import { toDateInputValue } from "../../../utils/formatters";
+import type { Income } from "../../../types/Income";
 
 interface IncomeFormProps {
+  initial?: Income;
   onClose: () => void;
   onSaved: () => void;
 }
 
-function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
-  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
-  const [dueDate, setDueDate] = useState(() => new Date().toISOString().split("T")[0]);
+function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
+  const isEdit = Boolean(initial);
+
+  const [name, setName] = useState(initial?.name || "");
+  const [value, setValue] = useState(initial?.amount ? String(initial.amount) : "");
+  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : new Date().toISOString().split("T")[0]);
+  const [dueDate, setDueDate] = useState(initial?.due_date ? toDateInputValue(initial.due_date) : new Date().toISOString().split("T")[0]);
   const [isRecurring, setIsRecurring] = useState(false);
-  const [walletId, setWalletId] = useState<number | "">("");
+  const [walletId, setWalletId] = useState<number | "">(initial?.wallet_id || "");
   const [wallets, setWallets] = useState<{ id: number; name: string; value: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -53,23 +58,15 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
         name: name.trim(),
         value: numericValue,
         date,
-        due_date: isRecurring ? dueDate : undefined,
-        is_recurring: isRecurring,
+        due_date: dueDate,
         wallet_id: walletId || undefined,
       };
 
-      await createIncome(incomeData);
-
-      // Atualizar saldo da wallet se selecionada e NÃO for recorrente
-      // Recorrentes são criadas como não pagas, wallet só atualiza ao marcar como pago
-      // if (walletId && !isRecurring) {
-      //   const wallet = wallets.find(w => w.id === walletId);
-      //   if (wallet) {
-      //     // Receita adiciona ao saldo
-      //     //const newValue = wallet.value + numericValue;
-      //     await updateWallet(walletId, { value: Number(value), operation: "income" });
-      //   }
-      // }
+      if (isEdit && initial) {
+        await updateIncome(initial.id, incomeData);
+      } else {
+        await createIncome({ ...incomeData, is_recurring: isRecurring });
+      }
 
       onSaved();
       onClose();
@@ -119,6 +116,16 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
       </div>
 
       <div className="form-field">
+        <label htmlFor="income-due-date">Data de vencimento</label>
+        <input
+          id="income-due-date"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+      </div>
+
+      <div className="form-field">
         <label htmlFor="income-wallet">Carteira (opcional)</label>
         <SelectField
           id="income-wallet"
@@ -134,29 +141,19 @@ function IncomeForm({ onClose, onSaved }: IncomeFormProps) {
         </SelectField>
       </div>
 
-      <div className="form-field form-field-checkbox">
-        <label htmlFor="income-recurring">
-          <input
-            id="income-recurring"
-            type="checkbox"
-            checked={isRecurring}
-            onChange={(e) => setIsRecurring(e.target.checked)}
-          />
-          Receita recorrente
-        </label>
-      </div>
-
-      {isRecurring && 
-        <div className="form-field">
-          <label htmlFor="income-due-date">Data de vencimento</label>
-          <input
-            id="income-due-date"
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
+      {!isEdit && (
+        <div className="form-field form-field-checkbox">
+          <label htmlFor="income-recurring">
+            <input
+              id="income-recurring"
+              type="checkbox"
+              checked={isRecurring}
+              onChange={(e) => setIsRecurring(e.target.checked)}
+            />
+            Receita recorrente
+          </label>
         </div>
-      }
+      )}
 
       <div className="form-actions">
         <button type="button" className="btn-cancel" onClick={onClose}>

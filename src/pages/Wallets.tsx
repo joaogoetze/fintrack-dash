@@ -9,6 +9,7 @@ import WalletItem from "../components/items/WalletItem/WalletItem";
 function Wallets() {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingWallet, setEditingWallet] = useState<Wallet | undefined>(undefined);
 
     const loadWallets = useCallback(async () => {
         const data = await getWallets();
@@ -22,14 +23,15 @@ function Wallets() {
     return (
         <div className="page-container">
             <div className="page-header">
-                <PrimaryButton buttonText="+ Carteira" onClick={() => setIsModalOpen(true)} />
+                <PrimaryButton buttonText="+ Carteira" onClick={() => { setEditingWallet(undefined); setIsModalOpen(true); }} />
             </div>
             <DynamicModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Adicionar Carteira"
+                title={editingWallet ? "Editar Carteira" : "Adicionar Carteira"}
             >
                 <WalletForm
+                    initial={editingWallet}
                     onClose={() => setIsModalOpen(false)}
                     onSaved={loadWallets}
                 />
@@ -37,7 +39,12 @@ function Wallets() {
 
             {wallets.length > 0 ? (
                 wallets.map(wallet =>
-                    <WalletItem key={wallet.id} wallet={wallet} onUpdate={loadWallets} />
+                    <WalletItem
+                        key={wallet.id}
+                        wallet={wallet}
+                        onUpdate={loadWallets}
+                        onEdit={(w) => { setEditingWallet(w); setIsModalOpen(true); }}
+                    />
                 )
             ) : (
                 <div className="empty-state">Nenhuma carteira</div>

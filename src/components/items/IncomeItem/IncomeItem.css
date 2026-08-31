@@ -28,6 +28,11 @@
 .income-icon {
   color: var(--brand-primary);
 }
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 .item-delete-btn {
   background: none;
   border: none;
@@ -42,6 +47,23 @@
   color: var(--error-color);
 }
 .item-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.item-edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.item-edit-btn:hover {
+  color: var(--brand-primary);
+}
+.item-edit-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

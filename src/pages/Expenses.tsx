@@ -11,6 +11,7 @@ function Expenses() {
   const activeMonth = useMonthStore((state) => state.activeMonth);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
   const loadExpenses = useCallback(async () => {
     const data = await getExpenses(activeMonth);
@@ -24,14 +25,15 @@ function Expenses() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <PrimaryButton buttonText="+ Despesa" onClick={() => setIsModalOpen(true)} />
+        <PrimaryButton buttonText="+ Despesa" onClick={() => { setEditingExpense(undefined); setIsModalOpen(true); }} />
       </div>
       <DynamicModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Adicionar Despesa"
+        title={editingExpense ? "Editar Despesa" : "Adicionar Despesa"}
       >
         <ExpenseForm
+          initial={editingExpense}
           onClose={() => setIsModalOpen(false)}
           onSaved={loadExpenses}
         />
@@ -39,7 +41,12 @@ function Expenses() {
 
       {expenses.length > 0 ? (
         expenses.map(expense =>
-          <ExpenseItem key={expense.id} expense={expense} onUpdate={loadExpenses} />
+          <ExpenseItem
+            key={expense.id}
+            expense={expense}
+            onUpdate={loadExpenses}
+            onEdit={(e) => { setEditingExpense(e); setIsModalOpen(true); }}
+          />
         )
       ) : (
         <div className="empty-state">Nenhuma despesa</div>

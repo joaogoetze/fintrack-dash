@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react";
 import "./ExpenseForm.css";
-import { createExpense } from "../../../api/expenses";
-import { getWallets, updateWallet } from "../../../api/wallets";
+import { createExpense, updateExpense } from "../../../api/expenses";
+import { getWallets } from "../../../api/wallets";
 import SelectField from "../../ui/SelectField/SelectField";
+import { toDateInputValue } from "../../../utils/formatters";
+import type { Expense } from "../../../types/Expense";
 
 interface ExpenseFormProps {
+  initial?: Expense;
   onClose: () => void;
   onSaved: () => void;
 }
 
-function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
-  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
-  const [dueDate, setDueDate] = useState(() => new Date().toISOString().split("T")[0]);
+function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
+  const isEdit = Boolean(initial);
+
+  const [name, setName] = useState(initial?.name || "");
+  const [value, setValue] = useState(initial?.amount || "");
+  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : new Date().toISOString().split("T")[0]);
+  const [dueDate, setDueDate] = useState(initial?.due_date ? toDateInputValue(initial.due_date) : new Date().toISOString().split("T")[0]);
   const [isRecurring, setIsRecurring] = useState(false);
-  const [walletId, setWalletId] = useState<number | "">("");
+  const [walletId, setWalletId] = useState<number | "">(initial?.wallet_id || "");
   const [wallets, setWallets] = useState<{ id: number; name: string; value: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -54,23 +59,15 @@ function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
         name: name.trim(),
         value,
         date,
-        due_date: isRecurring ? dueDate : undefined,
-        is_recurring: isRecurring,
+        due_date: dueDate,
         wallet_id: walletId || undefined,
       };
 
-      await createExpense(expenseData);
-
-      // Atualizar saldo da wallet se selecionada e NÃO for recorrente
-      // Recorrentes são criadas como não pagas, wallet só atualiza ao marcar como pago
-      // if (walletId && !isRecurring) {
-      //   const wallet = wallets.find(w => w.id === walletId);
-      //   if (wallet) {
-      //     // Despesa subtrai do saldo
-
-      //     await updateWallet(walletId, { value: Number(value), operation: "expense" });
-      //   }
-      // }
+      if (isEdit && initial) {
+        await updateExpense(initial.id, expenseData);
+      } else {
+        await createExpense({ ...expenseData, is_recurring: isRecurring });
+      }
 
       onSaved();
       onClose();
@@ -120,6 +117,16 @@ function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
       </div>
 
       <div className="form-field">
+        <label htmlFor="expense-due-date">Data de vencimento</label>
+        <input
+          id="expense-due-date"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+      </div>
+
+      <div className="form-field">
         <label htmlFor="expense-wallet">Carteira (opcional)</label>
         <SelectField
           id="expense-wallet"
@@ -135,36 +142,26 @@ function ExpenseForm({ onClose, onSaved }: ExpenseFormProps) {
         </SelectField>
       </div>
 
-      <div className="form-field form-field-checkbox">
-        <label htmlFor="expense-recurring">
-          <input
-            id="expense-recurring"
-            type="checkbox"
-            checked={isRecurring}
-            onChange={(e) => setIsRecurring(e.target.checked)}
-          />
-          Despesa recorrente
-        </label>
-      </div>
-
-      {isRecurring && 
-        <div className="form-field">
-          <label htmlFor="expense-date">Data de vencimento</label>
-          <input
-            id="due-date"
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
+      {!isEdit && (
+        <div className="form-field form-field-checkbox">
+          <label htmlFor="expense-recurring">
+            <input
+              id="expense-recurring"
+              type="checkbox"
+              checked={isRecurring}
+              onChange={(e) => setIsRecurring(e.target.checked)}
+            />
+            Despesa recorrente
+          </label>
         </div>
-      }
+      )}
 
       <div className="form-actions">
         <button type="button" className="btn-cancel" onClick={onClose}>
           Cancelar
         </button>
         <button type="submit" className="btn-save" disabled={loading}>
-          {loading ? "Salvando..." : "Salvar"}
+          {loading ? "Salvando..." : isEdit ? "Salvar" : "Salvar"}
         </button>
       </div>
     </form>

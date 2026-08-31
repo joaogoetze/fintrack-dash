@@ -1,5 +1,5 @@
 import type { Wallet } from "../../../types/Wallet";
-import { Wallet as WalletIcon, Trash2 } from "lucide-react";
+import { Wallet as WalletIcon, Trash2, Pencil } from "lucide-react";
 import { deleteWallet } from "../../../api/wallets";
 import { useState } from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
@@ -8,9 +8,10 @@ import "./WalletItem.css";
 interface WalletItemProps {
   wallet: Wallet;
   onUpdate?: () => void;
+  onEdit?: (wallet: Wallet) => void;
 }
 
-function WalletItem({ wallet, onUpdate }: WalletItemProps) {
+function WalletItem({ wallet, onUpdate, onEdit }: WalletItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const formatCurrencyLocal = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
@@ -33,8 +34,15 @@ function WalletItem({ wallet, onUpdate }: WalletItemProps) {
           </div>
           <span className="wallet-card-name">{wallet.name}</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div className="item-actions">
           <span className="wallet-card-value">{formatCurrencyLocal(wallet.balance)}</span>
+          <button
+            type="button"
+            className="item-edit-btn"
+            onClick={() => onEdit?.(wallet)}
+          >
+            <Pencil size={18} />
+          </button>
           <button
             type="button"
             className="item-delete-btn"

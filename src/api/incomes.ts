@@ -19,6 +19,16 @@ export function updateIncomePaid(id: number, paid: boolean, wallet_id?: number, 
     return api.put(`/incomes/${id}/paid`, { paid, wallet_id, value });
 }
 
+export function updateIncome(id: number, data: {
+    name: string;
+    value: number;
+    date: string;
+    due_date?: string;
+    wallet_id?: number;
+}) {
+    return api.put(`/incomes/${id}`, data);
+}
+
 export function deleteIncome(id: number) {
     return api.delete(`/incomes/${id}`);
 }

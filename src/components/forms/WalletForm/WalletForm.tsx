@@ -1,15 +1,19 @@
 import { useState } from "react";
 import "./WalletForm.css";
-import { createWallet } from "../../../api/wallets";
+import { createWallet, updateWalletName } from "../../../api/wallets";
+import type { Wallet } from "../../../types/Wallet";
 
 interface WalletFormProps {
+  initial?: Wallet;
   onClose: () => void;
   onSaved: () => void;
 }
 
-function WalletForm({ onClose, onSaved }: WalletFormProps) {
-  const [name, setName] = useState("");
-  const [value, setValue] = useState(0);
+function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
+  const isEdit = Boolean(initial);
+
+  const [name, setName] = useState(initial?.name || "");
+  const [value, setValue] = useState(initial ? initial.balance : 0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,11 +21,20 @@ function WalletForm({ onClose, onSaved }: WalletFormProps) {
     setError("");
     setLoading(true);
 
-    await createWallet({ name, value });
+    try {
+      if (isEdit && initial) {
+        await updateWalletName(initial.id, name);
+      } else {
+        await createWallet({ name, value });
+      }
 
-    onSaved();
-    onClose();
-    setLoading(false);
+      onSaved();
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao salvar");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,9 +42,9 @@ function WalletForm({ onClose, onSaved }: WalletFormProps) {
       {error && <div className="form-error">{error}</div>}
 
       <div className="form-field">
-        <label htmlFor="expense-name">Nome</label>
+        <label htmlFor="wallet-name">Nome</label>
         <input
-          id="expense-name"
+          id="wallet-name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -39,18 +52,20 @@ function WalletForm({ onClose, onSaved }: WalletFormProps) {
         />
       </div>
 
-      <div className="form-field">
-        <label htmlFor="expense-value">Valor (R$)</label>
-        <input
-          id="expense-value"
-          type="number"
-          step="0.01"
-          min="0"
-          value={value}
-          onChange={(e) => setValue(Number(e.target.value))}
-          placeholder="0,00"
-        />
-      </div>
+      {!isEdit && (
+        <div className="form-field">
+          <label htmlFor="wallet-value">Valor (R$)</label>
+          <input
+            id="wallet-value"
+            type="number"
+            step="0.01"
+            min="0"
+            value={value}
+            onChange={(e) => setValue(Number(e.target.value))}
+            placeholder="0,00"
+          />
+        </div>
+      )}
 
       <div className="form-actions">
         <button type="button" className="btn-cancel" onClick={onClose}>

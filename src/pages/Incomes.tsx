@@ -11,6 +11,7 @@ function Incomes() {
     const activeMonth = useMonthStore((state) => state.activeMonth);
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingIncome, setEditingIncome] = useState<Income | undefined>(undefined);
 
     const loadIncomes = useCallback(async () => {
         const data = await getIncomes(activeMonth);
@@ -24,14 +25,15 @@ function Incomes() {
     return (
         <div className="page-container">
             <div className="page-header">
-                <PrimaryButton buttonText="+ Receita" onClick={() => setIsModalOpen(true)} />
+                <PrimaryButton buttonText="+ Receita" onClick={() => { setEditingIncome(undefined); setIsModalOpen(true); }} />
             </div>
             <DynamicModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Adicionar Receita"
+                title={editingIncome ? "Editar Receita" : "Adicionar Receita"}
             >
                 <IncomeForm
+                    initial={editingIncome}
                     onClose={() => setIsModalOpen(false)}
                     onSaved={loadIncomes}
                 />
@@ -39,7 +41,12 @@ function Incomes() {
 
             {incomes.length > 0 ? (
                 incomes.map(income =>
-                    <IncomeItem key={income.id} income={income} onUpdate={loadIncomes} />
+                    <IncomeItem
+                        key={income.id}
+                        income={income}
+                        onUpdate={loadIncomes}
+                        onEdit={(i) => { setEditingIncome(i); setIsModalOpen(true); }}
+                    />
                 )
             ) : (
                 <div className="empty-state">Nenhuma receita</div>

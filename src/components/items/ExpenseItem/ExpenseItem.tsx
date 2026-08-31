@@ -1,6 +1,6 @@
 import type { Expense } from "../../../types/Expense";
 import { formatDate } from "../../../utils/formatters";
-import { ArrowDownRight, CheckSquare, Trash2 } from "lucide-react";
+import { ArrowDownRight, CheckSquare, Trash2, Pencil } from "lucide-react";
 import { updateExpensePaid, deleteExpense } from "../../../api/expenses";
 import { useState } from "react";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
@@ -10,9 +10,10 @@ import "./ExpenseItem.css";
 interface ExpenseItemProps {
   expense: Expense;
   onUpdate?: () => void;
+  onEdit?: (expense: Expense) => void;
 }
 
-function ExpenseItem({ expense, onUpdate }: ExpenseItemProps) {
+function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
   const [loading, setLoading] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -77,16 +78,26 @@ function ExpenseItem({ expense, onUpdate }: ExpenseItemProps) {
             <ArrowDownRight size={18} className="expense-icon" />
             <span className="expense-card-name">{expense.name}</span>
           </div>
-          {!isRecurring && (
-            <button
-              type="button"
-              className="item-delete-btn"
-              onClick={() => setIsDeleteModalOpen(true)}
-              disabled={loading}
-            >
-              <Trash2 size={18} />
-            </button>
-          )}
+          <div className="item-actions">
+              <button
+                type="button"
+                className="item-edit-btn"
+                onClick={() => onEdit?.(expense)}
+                disabled={loading}
+              >
+                <Pencil size={18} />
+              </button>
+              {!isRecurring && (
+                <button
+                  type="button"
+                  className="item-delete-btn"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  disabled={loading}
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
         </div>
         <div className="expense-card-info">
           <span className="expense-card-label">Valor</span>
