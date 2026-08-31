@@ -11,12 +11,8 @@ export function createWallet(data: {
     return api.post("/wallets", data);
 }
 
-export function updateWallet(id: number, data: { value: number, operation: string }) {
-    return api.put(`/wallets/${id}`, data);
-}
-
-export function updateWalletName(id: number, name: string) {
-    return api.put(`/wallets/${id}/name`, { name });
+export function updateWallet(id: number, data: { name: string; value: number }) {
+    return api.put(`/wallets/${id}/update`, data);
 }
 
 export function deleteWallet(id: number) {

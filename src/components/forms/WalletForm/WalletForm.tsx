@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./WalletForm.css";
-import { createWallet, updateWalletName } from "../../../api/wallets";
+import { createWallet, updateWallet } from "../../../api/wallets";
 import type { Wallet } from "../../../types/Wallet";
 
 interface WalletFormProps {
@@ -23,7 +23,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
 
     try {
       if (isEdit && initial) {
-        await updateWalletName(initial.id, name);
+        await updateWallet(initial.id, { name, value });
       } else {
         await createWallet({ name, value });
       }
@@ -52,20 +52,18 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
         />
       </div>
 
-      {!isEdit && (
-        <div className="form-field">
-          <label htmlFor="wallet-value">Valor (R$)</label>
-          <input
-            id="wallet-value"
-            type="number"
-            step="0.01"
-            min="0"
-            value={value}
-            onChange={(e) => setValue(Number(e.target.value))}
-            placeholder="0,00"
-          />
-        </div>
-      )}
+      <div className="form-field">
+        <label htmlFor="wallet-value">Valor (R$)</label>
+        <input
+          id="wallet-value"
+          type="number"
+          step="0.01"
+          min="0"
+          value={value}
+          onChange={(e) => setValue(Number(e.target.value))}
+          placeholder="0,00"
+        />
+      </div>
 
       <div className="form-actions">
         <button type="button" className="btn-cancel" onClick={onClose}>
