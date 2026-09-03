@@ -1,0 +1,85 @@
+.due-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+.due-card.due-today {
+  border-left-color: var(--error-color);
+}
+.due-card.due-soon {
+  border-left-color: var(--warning-color);
+}
+.due-card.due-later {
+  border-left-color: var(--text-secondary);
+}
+.due-card.due-paid {
+  border-left-color: var(--brand-primary);
+  opacity: 0.6;
+}
+.due-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.due-card-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.due-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.due-icon {
+  color: var(--error-color);
+}
+.due-card-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.due-card-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.due-card-value {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.due-card.due-today .due-date-value {
+  color: var(--error-color);
+}
+.due-card.due-soon .due-date-value {
+  color: var(--warning-color);
+}
+.due-card.due-later .due-date-value {
+  color: var(--text-secondary);
+}
+.due-card.due-paid .due-date-value {
+  color: var(--brand-primary);
+}
+.paid-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.paid-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--success-color);
+}
+.paid-checkbox svg {
+  color: var(--success-color);
+}

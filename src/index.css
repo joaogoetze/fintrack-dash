@@ -13,6 +13,8 @@
   
   --border-color: rgba(16, 185, 129, 0.2);
   --error-color: #ef4444;
+  --warning-color: #eab308;
+  --success-color: #10b981;
   
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -48,8 +50,13 @@ body {
 
 .page-header {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
+}
+
+.page-header.with-total {
+  justify-content: space-between;
 }
 
 .empty-state {
@@ -65,6 +72,17 @@ body {
   display: flex;
   gap: 16px;
   width: 100%;
+}
+
+.dashboard-dues {
+  margin-top: 32px;
+}
+
+.dashboard-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
 }
 
 /* Base Form Actions (Common for many forms) */
@@ -110,4 +128,49 @@ body {
 .btn-save:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* Lists */
+.items-list-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.items-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 12px 16px;
+  gap: 16px;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-name-cell {
+  flex: 2;
+  min-width: 150px;
+}
+
+.header-actions-cell {
+  flex: 0 0 100px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .items-list-header {
+    display: none;
+  }
 }

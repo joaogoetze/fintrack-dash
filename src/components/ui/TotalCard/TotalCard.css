@@ -1,0 +1,22 @@
+.total-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.total-card-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.total-card-value {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
