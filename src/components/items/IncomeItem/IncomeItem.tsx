@@ -1,6 +1,6 @@
 import type { Income } from "../../../types/Income";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
-import { ArrowUpRight, CheckSquare, Trash2, Pencil } from "lucide-react";
+import { ArrowUpRight, Trash2, Pencil } from "lucide-react";
 import { updateIncomePaid, deleteIncome } from "../../../api/incomes";
 import { useState } from "react";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
@@ -72,62 +72,61 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
 
   return (
     <>
-      <div className={`income-card ${!income.paid ? "unpaid" : ""}`}>
-        <div className="income-card-header">
-          <div className="income-card-name-wrapper">
-            <ArrowUpRight size={18} className="income-icon" />
-            <span className="income-card-name">{income.name}</span>
-          </div>
-          <div className="item-actions">
-              <button
-                type="button"
-                className="item-edit-btn"
-                onClick={() => onEdit?.(income)}
-                disabled={loading}
-              >
-                <Pencil size={18} />
-              </button>
-              {!isRecurring && (
-                <button
-                  type="button"
-                  className="item-delete-btn"
-                  onClick={() => setIsDeleteModalOpen(true)}
-                  disabled={loading}
-                >
-                  <Trash2 size={18} />
-                </button>
-              )}
-            </div>
+      <div className={`income-item-row ${!income.paid ? "unpaid" : ""}`}>
+        <div className="item-cell item-name-cell">
+          <ArrowUpRight size={18} className="income-icon" />
+          <span className="item-name">{income.name}</span>
         </div>
-        <div className="income-card-info">
-          <span className="income-card-label">Valor</span>
-          <span className="income-card-value">{formatCurrency(income.amount)}</span>
+        <div className="item-cell item-value-cell">
+          <span className="item-label-mobile">Valor:</span>
+          <span className="item-value">{formatCurrency(income.amount)}</span>
         </div>
-        <div className="income-card-info">
-          <span className="income-card-label">Data</span>
-          <span className="income-card-value">{formatDate(income.date)}</span>
+        <div className="item-cell item-date-cell">
+          <span className="item-label-mobile">Data:</span>
+          <span className="item-date">{formatDate(income.date)}</span>
         </div>
-        <div className="income-card-info">
-          <span className="income-card-label">Data de vencimento</span>
-          <span className="income-card-value">{formatDate(income.due_date) || "Nenhuma data"}</span>
+        <div className="item-cell item-date-cell">
+          <span className="item-label-mobile">Vencimento:</span>
+          <span className="item-date">{formatDate(income.due_date) || "-"}</span>
         </div>
-        <div className="income-card-info">
-          <span className="income-card-label">Carteira</span>
-          <span className="income-card-value">
-            {income.wallet_name || "Nenhuma carteira selecionada"}
-          </span>
+        <div className="item-cell item-wallet-cell">
+          <span className="item-label-mobile">Carteira:</span>
+          <span className="item-wallet">{income.wallet_name || "-"}</span>
         </div>
-        <div className="income-card-paid">
-          <label className="paid-checkbox">
+        <div className="item-cell item-actions-cell">
+          <label className="paid-checkbox" title="Marcar como pago">
             <input
               type="checkbox"
               checked={income.paid}
               onChange={(e) => handlePaidChange(e.target.checked)}
               disabled={loading}
             />
-            <CheckSquare size={18} />
-            <span>Pago</span>
+            <span className="paid-label-text">Pago</span>
           </label>
+          <button
+            type="button"
+            className="item-action-btn edit-btn"
+            onClick={() => onEdit?.(income)}
+            disabled={loading}
+            title="Editar"
+          >
+            <Pencil size={18} />
+          </button>
+          {!isRecurring ? (
+            <button
+              type="button"
+              className="item-action-btn delete-btn"
+              onClick={() => setIsDeleteModalOpen(true)}
+              disabled={loading}
+              title="Excluir"
+            >
+              <Trash2 size={18} />
+            </button>
+          ) : (
+            <div className="item-action-btn" style={{ visibility: "hidden" }}>
+              <Trash2 size={18} />
+            </div>
+          )}
         </div>
       </div>
 
