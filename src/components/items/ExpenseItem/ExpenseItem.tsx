@@ -14,6 +14,7 @@ interface ExpenseItemProps {
 }
 
 function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
+  
   const [loading, setLoading] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -65,7 +66,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
     }
   };
 
-  const isRecurring = Boolean(expense.recurring_transaction_id);
+  //const isRecurring = Boolean(expense.recurring_transaction_id);
   const deleteMessage = expense.paid
     ? `O valor de R$ ${expense.amount} será adicionado de volta à carteira. Deseja excluir esta despesa?`
     : "Deseja excluir esta despesa?";
@@ -79,7 +80,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
         </div>
         <div className="item-cell item-value-cell">
           <span className="item-label-mobile">Valor:</span>
-          <span className="item-value">{formatCurrency(Number(expense.amount))}</span>
+          <span className="item-value">{formatCurrency(expense.amount)}</span>
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Data:</span>
@@ -112,7 +113,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
           >
             <Pencil size={18} />
           </button>
-          {!isRecurring ? (
+
             <button
               type="button"
               className="item-action-btn delete-btn"
@@ -122,11 +123,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
             >
               <Trash2 size={18} />
             </button>
-          ) : (
-            <div className="item-action-btn" style={{ visibility: "hidden" }}>
-              <Trash2 size={18} />
-            </div>
-          )}
+
         </div>
       </div>
 

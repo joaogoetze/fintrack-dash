@@ -6,9 +6,9 @@ export function getIncomes(activeMonth: any) {
 
 export function createIncome(data: {
     name: string;
-    value: number;
+    amount: string;
     date: string;
-    due_date?: string;
+    due_date?: string | null;
     is_recurring: boolean;
     wallet_id?: number;
 }) {
@@ -21,10 +21,12 @@ export function updateIncomePaid(id: number, paid: boolean, wallet_id?: number, 
 
 export function updateIncome(id: number, data: {
     name: string;
-    value: number;
+    amount: string;
     date: string;
-    due_date?: string;
+    due_date: string | null;
     wallet_id?: number;
+    update_rec: boolean;
+    recurring_transaction_id: number | null
 }) {
     return api.put(`/incomes/${id}`, data);
 }

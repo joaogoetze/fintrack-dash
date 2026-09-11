@@ -6,12 +6,12 @@ export function getWallets() {
 
 export function createWallet(data: {
     name: string;
-    value: number;
+    balance: number;
 }) {
     return api.post("/wallets", data);
 }
 
-export function updateWallet(id: number, data: { name: string; value: number }) {
+export function updateWallet(id: number, data: { name: string; balance: number }) {
     return api.put(`/wallets/${id}/update`, data);
 }
 

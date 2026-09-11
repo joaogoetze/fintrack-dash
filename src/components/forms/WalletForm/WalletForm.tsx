@@ -13,7 +13,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
   const isEdit = Boolean(initial);
 
   const [name, setName] = useState(initial?.name || "");
-  const [value, setValue] = useState(initial ? initial.balance : 0);
+  const [value, setValue] = useState(initial?.balance || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,10 +22,13 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
     setLoading(true);
 
     try {
+
+      const balance = Number(value.replace(",", "."));
+
       if (isEdit && initial) {
-        await updateWallet(initial.id, { name, value });
+        await updateWallet(initial.id, { name, balance });
       } else {
-        await createWallet({ name, value });
+        await createWallet({ name, balance });
       }
 
       onSaved();
@@ -56,11 +59,18 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
         <label htmlFor="wallet-value">Valor (R$)</label>
         <input
           id="wallet-value"
-          type="number"
-          step="0.01"
-          min="0"
+          type="text"
+          //step="0.01"
+          //min="0"
+          inputMode="decimal"
           value={value}
-          onChange={(e) => setValue(Number(e.target.value))}
+          onChange={(e) => {
+    const value = e.target.value;
+
+    if (/^-?\d*[,.]?\d{0,2}$/.test(value)) {
+      setValue(value);
+    }
+  }}
           placeholder="0,00"
         />
       </div>

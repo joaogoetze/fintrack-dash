@@ -4,6 +4,7 @@ import { deleteWallet } from "../../../api/wallets";
 import { useState } from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import "./WalletItem.css";
+import { formatCurrency } from "../../../utils/formatters";
 
 interface WalletItemProps {
   wallet: Wallet;
@@ -13,7 +14,7 @@ interface WalletItemProps {
 
 function WalletItem({ wallet, onUpdate, onEdit }: WalletItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const formatCurrencyLocal = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  //const formatCurrencyLocal = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   const handleDelete = async () => {
     try {
@@ -35,7 +36,7 @@ function WalletItem({ wallet, onUpdate, onEdit }: WalletItemProps) {
           <span className="wallet-card-name">{wallet.name}</span>
         </div>
         <div className="item-actions">
-          <span className="wallet-card-value">{formatCurrencyLocal(wallet.balance)}</span>
+          <span className="wallet-card-value">{formatCurrency(wallet.balance)}</span>
           <button
             type="button"
             className="item-edit-btn"

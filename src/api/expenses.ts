@@ -7,9 +7,9 @@ export function getExpenses(activeMonth: any) {
 
 export function createExpense(data: {
     name: string;   
-    value: string;
+    amount: number;
     date: string;
-    due_date?: string;
+    due_date?: string | null;
     is_recurring: boolean;
     wallet_id?: number;
 }) {
@@ -22,11 +22,15 @@ export function updateExpensePaid(id: number, paid: boolean, wallet_id?: number,
 
 export function updateExpense(id: number, data: {
     name: string;
-    value: string;
+    amount: number;
     date: string;
-    due_date?: string;
+    due_date: string | null;
     wallet_id?: number;
+    update_rec: boolean;
+    recurring_transaction_id: number | null
 }) {
+    console.log("data", data);
+    
     return api.put(`/expenses/${id}`, data);
 }
 

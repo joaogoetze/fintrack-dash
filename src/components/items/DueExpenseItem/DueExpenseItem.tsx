@@ -92,7 +92,7 @@ function DueExpenseItem({ expense, onUpdate }: DueExpenseItemProps) {
         </div>
         <div className="due-card-info">
           <span className="due-card-label">Valor</span>
-          <span className="due-card-value">{formatCurrency(Number(expense.amount))}</span>
+          <span className="due-card-value">{formatCurrency(expense.amount)}</span>
         </div>
         <div className="due-card-info">
           <span className="due-card-label">Data de vencimento</span>

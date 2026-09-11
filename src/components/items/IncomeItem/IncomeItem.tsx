@@ -65,7 +65,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
     }
   };
 
-  const isRecurring = Boolean(income.recurring_transaction_id);
+ // const isRecurring = Boolean(income.recurring_transaction_id);
   const deleteMessage = income.paid
     ? `O valor de ${formatCurrency(income.amount)} será subtraído da carteira. Deseja excluir esta receita?`
     : "Deseja excluir esta receita?";
@@ -112,7 +112,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
           >
             <Pencil size={18} />
           </button>
-          {!isRecurring ? (
+          
             <button
               type="button"
               className="item-action-btn delete-btn"
@@ -122,11 +122,6 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
             >
               <Trash2 size={18} />
             </button>
-          ) : (
-            <div className="item-action-btn" style={{ visibility: "hidden" }}>
-              <Trash2 size={18} />
-            </div>
-          )}
         </div>
       </div>
 

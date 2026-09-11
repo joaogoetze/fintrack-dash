@@ -26,12 +26,12 @@ function Dashboard() {
             {sumary ? (
                 <div className="dashboard-cards">
                     <InfoCard
-                        label="Despesas"
-                        value={sumary.total_expenses}
-                    />
-                    <InfoCard
                         label="Receitas"
                         value={sumary.total_income}
+                    />
+                    <InfoCard
+                        label="Despesas"
+                        value={sumary.total_expenses}
                     />
                     <InfoCard
                         label="Balanço"
