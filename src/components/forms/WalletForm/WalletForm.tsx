@@ -1,7 +1,10 @@
 import { useState } from "react";
-import "./WalletForm.css";
+
+import type { Wallet } from "../../../types";
+
 import { createWallet, updateWallet } from "../../../api/wallets";
-import type { Wallet } from "../../../types/Wallet";
+
+import "./WalletForm.css";
 
 interface WalletFormProps {
   initial?: Wallet;
@@ -13,7 +16,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
   const isEdit = Boolean(initial);
 
   const [name, setName] = useState(initial?.name || "");
-  const [value, setValue] = useState(initial?.balance || "");
+  const [value, setValue] = useState(initial?.balance?.toString() || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -60,8 +63,6 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
         <input
           id="wallet-value"
           type="text"
-          //step="0.01"
-          //min="0"
           inputMode="decimal"
           value={value}
           onChange={(e) => {

@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import "./ExpenseForm.css";
+import { z } from "zod";
+
+import type { Expense, CreateExpenseInput, UpdateExpenseInput } from "../../../types";
+
 import { createExpense, updateExpense } from "../../../api/expenses";
 import { getWallets } from "../../../api/wallets";
-import SelectField from "../../ui/SelectField/SelectField";
+import { createExpenseRequest, updateExpenseSchema } from "../../../types";
 import { toDateInputValue } from "../../../utils/formatters";
-import type { Expense } from "../../../types/Expense";
+import SelectField from "../../ui/SelectField/SelectField";
+
+import "./ExpenseForm.css";
 
 interface ExpenseFormProps {
   initial?: Expense;
@@ -14,29 +19,28 @@ interface ExpenseFormProps {
 
 function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
   const isEdit = Boolean(initial);
+  const recurring_transaction_id = initial?.recurringTransactionId ?? null
 
   const [name, setName] = useState(initial?.name || "");
-  const [amount, setAmount] = useState(initial?.amount || "");
-  const recurring_transaction_id = initial?.recurring_transaction_id  || null
-
+  const [amount, setAmount] = useState(initial?.amount?.toString() || "");
   const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : new Date().toISOString().split("T")[0]);
-  
   const [isRecurring, setIsRecurring] = useState(
-  Boolean(initial?.recurring_transaction_id)
-);
+    Boolean(initial?.recurringTransactionId)
+  );
   const [updateRec, setUpdateRec] = useState(false);
-  const [walletId, setWalletId] = useState<number | "">(initial?.wallet_id || "");
-  const [wallets, setWallets] = useState<{ id: number; name: string; value: number }[]>([]);
-const [dueDate, setDueDate] = useState<string | null>(
-  initial?.due_date
-    ? toDateInputValue(initial.due_date)
-    : null
-);
+  const [walletId, setWalletId] = useState<number | "">(initial?.walletId || "");
+  const [wallets, setWallets] = useState<{ id: number; name: string; balance: number }[]>([]);
+  const [dueDate, setDueDate] = useState<string | null>(
+    initial?.dueDate
+      ? toDateInputValue(initial.dueDate)
+      : null
+  );
+
+  const paid = initial?.paid || true;
+  const id = initial?.id || null;
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
-
-  const amountRegex = /^\d{1,10}([.,]\d{1,2})?$/;
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const loadWallets = async () => {
@@ -50,38 +54,63 @@ const [dueDate, setDueDate] = useState<string | null>(
     loadWallets();
   }, []);
 
+  const validateField = (field: string, value: unknown) => {
+    const schema = isEdit ? updateExpenseSchema : createExpenseRequest;
+    const shape = schema.shape as Record<string, z.ZodTypeAny>;
+    const result = shape[field]?.safeParse(value);
+    if (result && !result.success) {
+      const firstIssue = result.error.issues?.[0];
+      setFieldErrors(prev => ({ ...prev, [field]: firstIssue?.message || "Erro" }));
+    } else {
+      setFieldErrors(prev => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
 
-    if (!amountRegex.test(amount)) {
-      setError("O valor deve ter no máximo 2 casas decimais");
-      return;
-    }
+    const amountValue = Number(amount.replace(",", "."));
+    const formData = {
+      id,
+      name: name.trim(),
+      amount: amountValue,
+      date,
+      dueDate,
+      walletId: walletId || undefined,
+      updateRecurringTransaction: updateRec,
+      recurringTransactionId: recurring_transaction_id,
+      isRecurring,
+      paid
+    };
 
-    if (!name.trim()) {
-      setError("Nome é obrigatório");
+    const schema = isEdit ? updateExpenseSchema : createExpenseRequest;
+    const result = schema.safeParse(formData);
+
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors;
+      
+      const firstError = Object.values(errors)[0]?.[0] || "Erro de validação";
+      setError(firstError);
+      const fieldErrorsMap: Record<string, string> = {};
+      Object.entries(errors).forEach(([key, val]) => {
+        if (val?.[0]) fieldErrorsMap[key] = val[0];
+      });
+      setFieldErrors(fieldErrorsMap);
       return;
     }
 
     setLoading(true);
     try {
-
-      const ia = Number(amount.replace(",", "."));
-      const expenseData = {
-        name: name.trim(),
-        amount: ia,
-        date,
-        due_date: dueDate,
-        wallet_id: walletId || undefined,
-        update_rec: updateRec,
-        recurring_transaction_id: recurring_transaction_id
-      };
-
       if (isEdit && initial) {
-        await updateExpense(initial.id, expenseData);
+        await updateExpense(initial.id, result.data as UpdateExpenseInput);
       } else {
-        await createExpense({ ...expenseData, is_recurring: isRecurring });
+        await createExpense(result.data as CreateExpenseInput);
       }
 
       onSaved();
@@ -103,9 +132,14 @@ const [dueDate, setDueDate] = useState<string | null>(
           id="expense-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            validateField("name", e.target.value.trim());
+          }}
           placeholder="Ex: Aluguel"
+          aria-invalid={!!fieldErrors.name}
         />
+        {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
       </div>
 
       <div className="form-field">
@@ -113,19 +147,19 @@ const [dueDate, setDueDate] = useState<string | null>(
         <input
           id="expense-value"
           type="text"
-          //step="0.01"
-          //min="0"
           inputMode="decimal"
           value={amount}
           onChange={(e) => {
-    const value = e.target.value;
-
-    if (/^\d*[,.]?\d*$/.test(value)) {
-      setAmount(value);
-    }
-  }}
+            const value = e.target.value;
+            if (/^\d*[,.]?\d*$/.test(value)) {
+              setAmount(value);
+              validateField("amount", Number(value.replace(",", ".")));
+            }
+          }}
           placeholder="0,00"
+          aria-invalid={!!fieldErrors.amount}
         />
+        {fieldErrors.amount && <span className="field-error">{fieldErrors.amount}</span>}
       </div>
 
       <div className="form-field">
@@ -134,26 +168,42 @@ const [dueDate, setDueDate] = useState<string | null>(
           id="expense-date"
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) => {
+            setDate(e.target.value);
+            validateField("date", e.target.value);
+          }}
+          aria-invalid={!!fieldErrors.date}
         />
+        {fieldErrors.date && <span className="field-error">{fieldErrors.date}</span>}
       </div>
-      {isRecurring && (<div className="form-field">
+
+      {isRecurring && (
+      <div className="form-field">
         <label htmlFor="expense-due-date">Data de vencimento</label>
         <input
           id="expense-due-date"
           type="date"
           value={dueDate ?? ""}
-          onChange={(e) => setDueDate(e.target.value)}
+          onChange={(e) => {
+            setDueDate(e.target.value);
+            validateField("dueDate", e.target.value || null);
+          }}
+          aria-invalid={!!fieldErrors.dueDate}
         />
-      </div>)}
-      
+        {fieldErrors.dueDate && <span className="field-error">{fieldErrors.dueDate}</span>}
+      </div>
+      )}
 
       <div className="form-field">
         <label htmlFor="expense-wallet">Carteira (opcional)</label>
         <SelectField
           id="expense-wallet"
           value={walletId}
-          onChange={(e) => setWalletId(e.target.value === "" ? "" : Number(e.target.value))}
+          onChange={(e) => {
+            const value = e.target.value === "" ? "" : Number(e.target.value);
+            setWalletId(value);
+            validateField("walletId", value || null);
+          }}
         >
           <option value="">Selecione uma carteira</option>
           {wallets.map(wallet => (
@@ -162,6 +212,7 @@ const [dueDate, setDueDate] = useState<string | null>(
             </option>
           ))}
         </SelectField>
+        {fieldErrors.walletId && <span className="field-error">{fieldErrors.walletId}</span>}
       </div>
 
       {!isEdit && (
@@ -172,16 +223,14 @@ const [dueDate, setDueDate] = useState<string | null>(
               type="checkbox"
               checked={isRecurring}
               onChange={(e) => {
-  const checked = e.target.checked;
-
-  setIsRecurring(checked);
-
-  if (checked) {
-    setDueDate(toDateInputValue(new Date().toISOString().split("T")[0]));
-  } else {
-    setDueDate(null);
-  }
-}}
+                const checked = e.target.checked;
+                setIsRecurring(checked);
+                if (checked) {
+                  setDueDate(toDateInputValue(new Date().toISOString().split("T")[0]));
+                } else {
+                  setDueDate(null);
+                }
+              }}
             />
             Despesa recorrente
           </label>
@@ -190,9 +239,9 @@ const [dueDate, setDueDate] = useState<string | null>(
 
       {(isEdit && isRecurring) && (
         <div className="form-field form-field-checkbox">
-          <label htmlFor="expense-recurring">
+          <label htmlFor="expense-recurring-edit">
             <input
-              id="aa"
+              id="expense-recurring-edit"
               type="checkbox"
               checked={updateRec}
               onChange={(e) => setUpdateRec(e.target.checked)}
@@ -207,7 +256,7 @@ const [dueDate, setDueDate] = useState<string | null>(
           Cancelar
         </button>
         <button type="submit" className="btn-save" disabled={loading}>
-          {loading ? "Salvando..." : isEdit ? "Salvar" : "Salvar"}
+          {loading ? "Salvando..." : "Salvar"}
         </button>
       </div>
     </form>

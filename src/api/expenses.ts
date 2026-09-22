@@ -1,39 +1,41 @@
+import { z } from "zod";
+
+import { 
+  expenseSchema, 
+  createExpenseRequest, 
+  updateExpenseSchema,
+  updateExpensePaidStatusSchema,
+  type Expense,
+  type CreateExpenseInput,
+  type UpdateExpenseInput,
+  type UpdateExpensePaidStatusInput
+} from "../types";
 import { api } from "./client";
 
-export function getExpenses(activeMonth: any) {
-      
-    return api.get(`/expenses/${activeMonth}`,);
+const expensesResponseSchema = z.object({
+  expenses: z.array(expenseSchema),
+  total: z.number(),
+});
+
+type ExpensesResponse = z.infer<typeof expensesResponseSchema>;
+
+export function getExpenses(activeMonth: string): Promise<ExpensesResponse> {
+    return api.get(`/expenses/${activeMonth}`, expensesResponseSchema);
 }
 
-export function createExpense(data: {
-    name: string;   
-    amount: number;
-    date: string;
-    due_date?: string | null;
-    is_recurring: boolean;
-    wallet_id?: number;
-}) {
-    return api.post("/expenses", data);
+export function createExpense(data: CreateExpenseInput): Promise<Expense> {
+    return api.post("/expenses", data, createExpenseRequest, expenseSchema);
 }
 
-export function updateExpensePaid(id: number, paid: boolean, wallet_id?: number, value?: number) {
-    return api.put(`/expenses/${id}/paid`, { paid, wallet_id, value });
+export function updateExpensePaid(id: number, paid: boolean, walletId?: number, amount?: number): Promise<Expense> {
+    const data: UpdateExpensePaidStatusInput = { paid, walletId, amount };
+    return api.put(`/expenses/${id}/paid`, data, updateExpensePaidStatusSchema, expenseSchema);
 }
 
-export function updateExpense(id: number, data: {
-    name: string;
-    amount: number;
-    date: string;
-    due_date: string | null;
-    wallet_id?: number;
-    update_rec: boolean;
-    recurring_transaction_id: number | null
-}) {
-    console.log("data", data);
-    
-    return api.put(`/expenses/${id}`, data);
+export function updateExpense(id: number, data: UpdateExpenseInput): Promise<Expense> {
+    return api.put(`/expenses/${id}`, data, updateExpenseSchema, expenseSchema);
 }
 
-export function deleteExpense(id: number) {
+export function deleteExpense(id: number): Promise<void> {
     return api.delete(`/expenses/${id}`);
 }

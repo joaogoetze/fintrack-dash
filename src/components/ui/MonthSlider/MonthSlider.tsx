@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
-import { generateMonths, getShortMonthName, keyToDate } from "../../../utils/monthUtils";
+
 import { useMonthStore } from "../../../stores/monthStore";
+import { generateMonths, getShortMonthName, keyToDate } from "../../../utils/monthUtils";
+
 import "./MonthSlider.css";
 
 function MonthSlider() {

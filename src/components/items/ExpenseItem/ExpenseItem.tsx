@@ -1,10 +1,13 @@
-import type { Expense } from "../../../types/Expense";
-import { formatDate, formatCurrency } from "../../../utils/formatters";
 import { ArrowDownRight, Trash2, Pencil } from "lucide-react";
-import { updateExpensePaid, deleteExpense } from "../../../api/expenses";
 import { useState } from "react";
-import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+
+import type { Expense } from "../../../types";
+
+import { updateExpensePaid, deleteExpense } from "../../../api/expenses";
+import { formatDate, formatCurrency } from "../../../utils/formatters";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
+import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+
 import "./ExpenseItem.css";
 
 interface ExpenseItemProps {
@@ -20,7 +23,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && !expense.wallet_id) {
+    if (newPaid && !expense.walletId) {
       setIsWalletModalOpen(true);
       return;
     }
@@ -30,7 +33,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
       await updateExpensePaid(
         expense.id,
         newPaid,
-        expense.wallet_id,
+        expense.walletId ?? undefined,
         Number(expense.amount)
       );
       onUpdate?.();
@@ -66,7 +69,6 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
     }
   };
 
-  //const isRecurring = Boolean(expense.recurring_transaction_id);
   const deleteMessage = expense.paid
     ? `O valor de R$ ${expense.amount} será adicionado de volta à carteira. Deseja excluir esta despesa?`
     : "Deseja excluir esta despesa?";
@@ -88,11 +90,11 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Vencimento:</span>
-          <span className="item-date">{formatDate(expense.due_date) || "-"}</span>
+          <span className="item-date">{formatDate(expense.dueDate) || "-"}</span>
         </div>
         <div className="item-cell item-wallet-cell">
           <span className="item-label-mobile">Carteira:</span>
-          <span className="item-wallet">{expense.wallet_name || "-"}</span>
+          <span className="item-wallet">{expense.walletName || "-"}</span>
         </div>
         <div className="item-cell item-actions-cell">
           <label className="paid-checkbox" title="Marcar como pago">

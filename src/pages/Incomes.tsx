@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
-import TotalCard from "../components/ui/TotalCard/TotalCard";
-import type { Income } from "../types/Income";
+
+import type { Income } from "../types";
+
 import { getIncomes } from "../api/incomes";
-import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import IncomeForm from "../components/forms/IncomeForm/IncomeForm";
 import IncomeItem from "../components/items/IncomeItem/IncomeItem";
+import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
+import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
+import TotalCard from "../components/ui/TotalCard/TotalCard";
 import { useMonthStore } from "../stores/monthStore";
 
 function Incomes() {
@@ -16,17 +18,14 @@ function Incomes() {
     const [editingIncome, setEditingIncome] = useState<Income | undefined>(undefined);
 
     const loadIncomes = useCallback(async () => {
-        const data = await getIncomes(activeMonth);
-        setIncomes(data.incomes);
-        setTotal(data.total);
+        const { incomes, total } = await getIncomes(activeMonth);
+        setIncomes(incomes);
+        setTotal(total);
     }, [activeMonth]);
 
     useEffect(() => {
-        getIncomes(activeMonth).then((data) => {
-            setIncomes(data.incomes);
-            setTotal(data.total);
-        });
-    }, [activeMonth]);
+        loadIncomes();
+    }, [loadIncomes]);
 
     return (
         <div className="page-container">

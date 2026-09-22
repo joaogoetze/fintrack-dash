@@ -1,5 +1,6 @@
 import MonthSlider from "../../ui/MonthSlider/MonthSlider";
 import NavigationBar from "../NavigationBar/NavigationBar";
+
 import "./Header.css";
 
 function Header() {

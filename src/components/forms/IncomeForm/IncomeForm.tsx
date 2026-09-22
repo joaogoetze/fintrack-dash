@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import "./IncomeForm.css";
+import { z } from "zod";
+
+import type { Income, CreateIncomeInput, UpdateIncomeInput } from "../../../types";
+
 import { createIncome, updateIncome } from "../../../api/incomes";
 import { getWallets } from "../../../api/wallets";
-import SelectField from "../../ui/SelectField/SelectField";
+import { createIncomeRequest, updateIncomeSchema } from "../../../types";
 import { toDateInputValue } from "../../../utils/formatters";
-import type { Income } from "../../../types/Income";
+import SelectField from "../../ui/SelectField/SelectField";
+
+import "./IncomeForm.css";
 
 interface IncomeFormProps {
   initial?: Income;
@@ -14,26 +19,25 @@ interface IncomeFormProps {
 
 function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   const isEdit = Boolean(initial);
-  const recurring_transaction_id = initial?.recurring_transaction_id  || null
+  const recurring_transaction_id = initial?.recurringTransactionId ?? null
 
   const [name, setName] = useState(initial?.name || "");
   const [updateRec, setUpdateRec] = useState(false);
-  const [amount, setAmount] = useState(initial?.amount || "");
+  const [amount, setAmount] = useState(initial?.amount?.toString() || "");
   const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : new Date().toISOString().split("T")[0]);
   const [dueDate, setDueDate] = useState<string | null>(
-  initial?.due_date
-    ? toDateInputValue(initial.due_date)
-    : null
-);
+    initial?.dueDate
+      ? toDateInputValue(initial.dueDate)
+      : null
+  );
   const [isRecurring, setIsRecurring] = useState(
-  Boolean(initial?.recurring_transaction_id)
-);
-  const [walletId, setWalletId] = useState<number | "">(initial?.wallet_id || "");
-  const [wallets, setWallets] = useState<{ id: number; name: string; value: number }[]>([]);
+    Boolean(initial?.recurringTransactionId)
+  );
+  const [walletId, setWalletId] = useState<number | "">(initial?.walletId || "");
+  const [wallets, setWallets] = useState<{ id: number; name: string; balance: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const amountRegex = /^\d{1,10}([.,]\d{1,2})?$/;
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const loadWallets = async () => {
@@ -47,36 +51,60 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
     loadWallets();
   }, []);
 
+  const validateField = (field: string, value: unknown) => {
+    const schema = isEdit ? updateIncomeSchema : createIncomeRequest;
+    const shape = schema.shape as Record<string, z.ZodTypeAny>;
+    const result = shape[field]?.safeParse(value);
+    if (result && !result.success) {
+      const firstIssue = result.error.issues?.[0];
+      setFieldErrors(prev => ({ ...prev, [field]: firstIssue?.message || "Erro" }));
+    } else {
+      setFieldErrors(prev => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
 
-    if (!name.trim()) {
-      setError("Nome é obrigatório");
-      return;
-    }
+    const amountValue = Number(amount.replace(",", "."));
+    const formData = {
+      name: name.trim(),
+      amount: amountValue,
+      date,
+      dueDate,
+      walletId: walletId || undefined,
+      updateRecurringTransaction: updateRec,
+      recurringTransactionId: recurring_transaction_id,
+      isRecurring,
+    };
 
-    if (!amountRegex.test(amount)) {
-      setError("O valor deve ter no máximo 2 casas decimais");
+    const schema = isEdit ? updateIncomeSchema : createIncomeRequest;
+    const result = schema.safeParse(formData);
+
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors;
+      const firstError = Object.values(errors)[0]?.[0] || "Erro de validação";
+      setError(firstError);
+      const fieldErrorsMap: Record<string, string> = {};
+      Object.entries(errors).forEach(([key, val]) => {
+        if (val?.[0]) fieldErrorsMap[key] = val[0];
+      });
+      setFieldErrors(fieldErrorsMap);
       return;
     }
 
     setLoading(true);
     try {
-      const incomeData = {
-        name: name.trim(),
-        amount,
-        date,
-        due_date: dueDate,
-        wallet_id: walletId || undefined,
-        update_rec: updateRec,
-        recurring_transaction_id: recurring_transaction_id
-      };
-
       if (isEdit && initial) {
-        await updateIncome(initial.id, incomeData);
+        await updateIncome(initial.id, result.data as UpdateIncomeInput);
       } else {
-        await createIncome({ ...incomeData, is_recurring: isRecurring });
+        await createIncome(result.data as CreateIncomeInput);
       }
 
       onSaved();
@@ -98,9 +126,14 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
           id="income-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            validateField("name", e.target.value.trim());
+          }}
           placeholder="Ex: Salário"
+          aria-invalid={!!fieldErrors.name}
         />
+        {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
       </div>
 
       <div className="form-field">
@@ -108,42 +141,50 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
         <input
           id="income-value"
           type="text"
-          //step="0.01"
-          //min="0"
           inputMode="decimal"
           value={amount}
           onChange={(e) => {
-    const value = e.target.value;
-
-    if (/^\d*[,.]?\d*$/.test(value)) {
-      setAmount(value);
-    }
-  }}
+            const value = e.target.value;
+            if (/^\d*[,.]?\d*$/.test(value)) {
+              setAmount(value);
+              validateField("amount", Number(value.replace(",", ".")));
+            }
+          }}
           placeholder="0,00"
+          aria-invalid={!!fieldErrors.amount}
         />
+        {fieldErrors.amount && <span className="field-error">{fieldErrors.amount}</span>}
       </div>
 
-      
-         <div className="form-field">
+      <div className="form-field">
         <label htmlFor="income-date">Data do recebimento</label>
         <input
           id="income-date"
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) => {
+            setDate(e.target.value);
+            validateField("date", e.target.value);
+          }}
+          aria-invalid={!!fieldErrors.date}
         />
+        {fieldErrors.date && <span className="field-error">{fieldErrors.date}</span>}
       </div>
-      
-     
-{isRecurring && (
+
+      {isRecurring && (
       <div className="form-field">
         <label htmlFor="income-due-date">Data de vencimento</label>
         <input
           id="income-due-date"
           type="date"
           value={dueDate ?? ""}
-          onChange={(e) => setDueDate(e.target.value)}
+          onChange={(e) => {
+            setDueDate(e.target.value);
+            validateField("dueDate", e.target.value || null);
+          }}
+          aria-invalid={!!fieldErrors.dueDate}
         />
+        {fieldErrors.dueDate && <span className="field-error">{fieldErrors.dueDate}</span>}
       </div>
       )}
 
@@ -152,7 +193,11 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
         <SelectField
           id="income-wallet"
           value={walletId}
-          onChange={(e) => setWalletId(e.target.value === "" ? "" : Number(e.target.value))}
+          onChange={(e) => {
+            const value = e.target.value === "" ? "" : Number(e.target.value);
+            setWalletId(value);
+            validateField("walletId", value || null);
+          }}
         >
           <option value="">Selecione uma carteira</option>
           {wallets.map(wallet => (
@@ -161,6 +206,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
             </option>
           ))}
         </SelectField>
+        {fieldErrors.walletId && <span className="field-error">{fieldErrors.walletId}</span>}
       </div>
 
       {!isEdit && (
@@ -171,27 +217,25 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
               type="checkbox"
               checked={isRecurring}
               onChange={(e) => {
-  const checked = e.target.checked;
-
-  setIsRecurring(checked);
-
-  if (checked) {
-    setDueDate(toDateInputValue(new Date().toISOString().split("T")[0]));
-  } else {
-    setDueDate(null);
-  }
-}}
+                const checked = e.target.checked;
+                setIsRecurring(checked);
+                if (checked) {
+                  setDueDate(toDateInputValue(new Date().toISOString().split("T")[0]));
+                } else {
+                  setDueDate(null);
+                }
+              }}
             />
             Receita recorrente
           </label>
         </div>
       )}
 
-            {(isEdit && isRecurring) && (
+      {(isEdit && isRecurring) && (
         <div className="form-field form-field-checkbox">
-          <label htmlFor="expense-recurring">
+          <label htmlFor="income-recurring-edit">
             <input
-              id="aa"
+              id="income-recurring-edit"
               type="checkbox"
               checked={updateRec}
               onChange={(e) => setUpdateRec(e.target.checked)}

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+
+import type { Wallet } from "../../../types";
+
+import { getWallets } from "../../../api/wallets";
 import DynamicModal from "../DynamicModal/DynamicModal";
 import SelectField from "../SelectField/SelectField";
-import { getWallets } from "../../../api/wallets";
-import type { Wallet } from "../../../types/Wallet";
 
 interface SelectWalletModalProps {
   isOpen: boolean;

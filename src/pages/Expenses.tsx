@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
+
+import type { Expense } from "../types";
+
 import { getExpenses } from "../api/expenses";
+import ExpenseForm from "../components/forms/ExpenseForm/ExpenseForm";
+import ExpenseItem from "../components/items/ExpenseItem/ExpenseItem";
+import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
-import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
-import ExpenseForm from "../components/forms/ExpenseForm/ExpenseForm";
-import type { Expense } from "../types/Expense";
-import ExpenseItem from "../components/items/ExpenseItem/ExpenseItem";
 import { useMonthStore } from "../stores/monthStore";
 
 function Expenses() {
@@ -16,17 +18,14 @@ function Expenses() {
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
   const loadExpenses = useCallback(async () => {
-    const data = await getExpenses(activeMonth);
-    setExpenses(data.expenses);
-    setTotal(data.total);
+    const { expenses, total } = await getExpenses(activeMonth);
+    setExpenses(expenses);
+    setTotal(total);
   }, [activeMonth]);
 
   useEffect(() => {
-    getExpenses(activeMonth).then((data) => {
-      setExpenses(data.expenses);
-      setTotal(data.total);
-    });
-  }, [activeMonth]);
+    loadExpenses();
+  }, [loadExpenses]);
 
   return (
     <div className="page-container">

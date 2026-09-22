@@ -1,10 +1,13 @@
-import type { Wallet } from "../../../types/Wallet";
 import { Wallet as WalletIcon, Trash2, Pencil } from "lucide-react";
-import { deleteWallet } from "../../../api/wallets";
 import { useState } from "react";
-import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
-import "./WalletItem.css";
+
+import type { Wallet } from "../../../types";
+
+import { deleteWallet } from "../../../api/wallets";
 import { formatCurrency } from "../../../utils/formatters";
+import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
+
+import "./WalletItem.css";
 
 interface WalletItemProps {
   wallet: Wallet;

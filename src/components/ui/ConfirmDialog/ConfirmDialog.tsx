@@ -1,4 +1,5 @@
 import DynamicModal from "../DynamicModal/DynamicModal";
+
 import "./ConfirmDialog.css";
 
 interface ConfirmDialogProps {

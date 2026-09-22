@@ -1,10 +1,13 @@
-import type { Income } from "../../../types/Income";
-import { formatCurrency, formatDate } from "../../../utils/formatters";
 import { ArrowUpRight, Trash2, Pencil } from "lucide-react";
-import { updateIncomePaid, deleteIncome } from "../../../api/incomes";
 import { useState } from "react";
-import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+
+import type { Income } from "../../../types";
+
+import { updateIncomePaid, deleteIncome } from "../../../api/incomes";
+import { formatCurrency, formatDate } from "../../../utils/formatters";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
+import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+
 import "./IncomeItem.css";
 
 interface IncomeItemProps {
@@ -19,7 +22,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && !income.wallet_id) {
+    if (newPaid && !income.walletId) {
       setIsWalletModalOpen(true);
       return;
     }
@@ -29,7 +32,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
       await updateIncomePaid(
         income.id,
         newPaid,
-        income.wallet_id,
+        income.walletId ?? undefined,
         Number(income.amount)
       );
       onUpdate?.();
@@ -65,7 +68,6 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
     }
   };
 
- // const isRecurring = Boolean(income.recurring_transaction_id);
   const deleteMessage = income.paid
     ? `O valor de ${formatCurrency(income.amount)} será subtraído da carteira. Deseja excluir esta receita?`
     : "Deseja excluir esta receita?";
@@ -87,11 +89,11 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Vencimento:</span>
-          <span className="item-date">{formatDate(income.due_date) || "-"}</span>
+          <span className="item-date">{formatDate(income.dueDate) || "-"}</span>
         </div>
         <div className="item-cell item-wallet-cell">
           <span className="item-label-mobile">Carteira:</span>
-          <span className="item-wallet">{income.wallet_name || "-"}</span>
+          <span className="item-wallet">{income.walletName || "-"}</span>
         </div>
         <div className="item-cell item-actions-cell">
           <label className="paid-checkbox" title="Marcar como pago">

@@ -1,41 +1,42 @@
 import { useEffect, useState, useCallback } from "react";
-import { getSumary, getDueExpenses } from "../api/dashboard";
-import type { Summary } from "../types/Summary";
-import type { Expense } from "../types/Expense";
+
+import type { Summary, DueTransaction } from "../types";
+
+import { getSummary, getDueTransactions } from "../api/dashboard";
+import DueTransactionItem from "../components/items/DueTransactionItem/DueTransactionItem";
 import InfoCard from "../components/ui/InfoCard/InfoCard";
-import DueExpenseItem from "../components/items/DueExpenseItem/DueExpenseItem";
 import { useMonthStore } from "../stores/monthStore";
 
 function Dashboard() {
     const activeMonth = useMonthStore((state) => state.activeMonth);
-    const [sumary, setSumary] = useState<Summary | null>(null);
-    const [dueExpenses, setDueExpenses] = useState<Expense[]>([]);
+    const [summary, setSummary] = useState<Summary | null>(null);
+    const [dueTransactions, setDueTransactions] = useState<DueTransaction[]>([]);
 
-    const loadDueExpenses = useCallback(async () => {
-        const data = await getDueExpenses(activeMonth);
-        setDueExpenses(data);
+    const loadDueTransactions = useCallback(async () => {
+        const data = await getDueTransactions(activeMonth);
+        setDueTransactions(data);
     }, [activeMonth]);
 
     useEffect(() => {
-        getSumary(activeMonth).then(setSumary);
-        loadDueExpenses();
-    }, [activeMonth, loadDueExpenses]);
+        getSummary(activeMonth).then(setSummary);
+        loadDueTransactions();
+    }, [activeMonth, loadDueTransactions]);
 
     return (
         <div className="page-container">
-            {sumary ? (
+            {summary ? (
                 <div className="dashboard-cards">
                     <InfoCard
                         label="Receitas"
-                        value={sumary.total_income}
+                        value={summary.totalIncome}
                     />
                     <InfoCard
                         label="Despesas"
-                        value={sumary.total_expenses}
+                        value={summary.totalExpenses}
                     />
                     <InfoCard
                         label="Balanço"
-                        value={sumary.balance}
+                        value={summary.balance}
                     />
                 </div>
             ) : (
@@ -44,12 +45,12 @@ function Dashboard() {
 
             <div className="dashboard-dues">
                 <h2 className="dashboard-section-title">Vencimentos do mês</h2>
-                {dueExpenses.length > 0 ? (
-                    dueExpenses.map(expense =>
-                        <DueExpenseItem
-                            key={expense.id}
-                            expense={expense}
-                            onUpdate={loadDueExpenses}
+                {dueTransactions.length > 0 ? (
+                    dueTransactions.map(transaction =>
+                        <DueTransactionItem
+                            key={`${transaction.type}-${transaction.id}`}
+                            transaction={transaction}
+                            onUpdate={loadDueTransactions}
                         />
                     )
                 ) : (

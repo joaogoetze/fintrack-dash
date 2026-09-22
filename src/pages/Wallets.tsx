@@ -1,10 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
-import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
-import type { Wallet } from "../types/Wallet";
+
+import type { Wallet } from "../types";
+
 import { getWallets } from "../api/wallets";
-import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import WalletForm from "../components/forms/WalletForm/WalletForm";
 import WalletItem from "../components/items/WalletItem/WalletItem";
+import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
+import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 
 function Wallets() {
     const [wallets, setWallets] = useState<Wallet[]>([]);

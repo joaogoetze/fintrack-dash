@@ -37,8 +37,11 @@
   font-weight: 600;
   color: var(--text-primary);
 }
-.due-icon {
+.due-card.due-expense .due-icon {
   color: var(--error-color);
+}
+.due-card.due-income .due-icon {
+  color: var(--success-color);
 }
 .due-card-info {
   display: flex;

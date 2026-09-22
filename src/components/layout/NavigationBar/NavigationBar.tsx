@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Receipt, Wallet, ArrowDownCircle } from "lucide-react";
+import { NavLink } from "react-router-dom";
+
 import "./NavigationBar.css";
 
 function NavigationBar() {

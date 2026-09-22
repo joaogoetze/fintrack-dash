@@ -1,22 +1,26 @@
-import type { Expense } from "../../../types/Expense";
-import { formatDate, toDateInputValue, formatCurrency } from "../../../utils/formatters";
-import { ArrowDownRight, CheckSquare } from "lucide-react";
-import { updateExpensePaid } from "../../../api/expenses";
+import { ArrowDownRight, ArrowUpRight, CheckSquare } from "lucide-react";
 import { useState } from "react";
-import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
-import "./DueExpenseItem.css";
 
-interface DueExpenseItemProps {
-  expense: Expense;
+import type { DueTransaction } from "../../../types";
+
+import { updateExpensePaid } from "../../../api/expenses";
+import { updateIncomePaid } from "../../../api/incomes";
+import { formatDate, toDateInputValue, formatCurrency } from "../../../utils/formatters";
+import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+
+import "./DueTransactionItem.css";
+
+interface DueTransactionItemProps {
+  transaction: DueTransaction;
   onUpdate?: () => void;
 }
 
 type DueStatus = "due-paid" | "due-today" | "due-soon" | "due-later";
 
-function getDueStatus(expense: Expense): DueStatus {
-  if (expense.paid) return "due-paid";
+function getDueStatus(transaction: Pick<DueTransaction, "paid" | "dueDate">): DueStatus {
+  if (transaction.paid) return "due-paid";
 
-  const dueStr = toDateInputValue(expense.due_date);
+  const dueStr = toDateInputValue(transaction.dueDate);
   if (!dueStr) return "due-later";
 
   const now = new Date();
@@ -31,24 +35,24 @@ function getDueStatus(expense: Expense): DueStatus {
   return "due-later";
 }
 
-function DueExpenseItem({ expense, onUpdate }: DueExpenseItemProps) {
+function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) {
   const [loading, setLoading] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
+  const updatePaid = (newPaid: boolean, walletId?: number) =>
+    transaction.type === "expense"
+      ? updateExpensePaid(transaction.id, newPaid, walletId, Number(transaction.amount))
+      : updateIncomePaid(transaction.id, newPaid, walletId, Number(transaction.amount));
+
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && !expense.wallet_id) {
+    if (newPaid && !transaction.walletId) {
       setIsWalletModalOpen(true);
       return;
     }
 
     setLoading(true);
     try {
-      await updateExpensePaid(
-        expense.id,
-        newPaid,
-        expense.wallet_id,
-        Number(expense.amount)
-      );
+      await updatePaid(newPaid, transaction.walletId ?? undefined);
       onUpdate?.();
     } catch (err) {
       console.error("Erro ao atualizar status de pagamento:", err);
@@ -60,7 +64,7 @@ function DueExpenseItem({ expense, onUpdate }: DueExpenseItemProps) {
   const handleWalletConfirm = async (walletId: number) => {
     setLoading(true);
     try {
-      await updateExpensePaid(expense.id, true, walletId, Number(expense.amount));
+      await updatePaid(true, walletId);
       onUpdate?.();
     } catch (err) {
       console.error("Erro ao marcar como pago:", err);
@@ -69,20 +73,21 @@ function DueExpenseItem({ expense, onUpdate }: DueExpenseItemProps) {
     }
   };
 
-  const status = getDueStatus(expense);
+  const status = getDueStatus(transaction);
+  const Icon = transaction.type === "expense" ? ArrowDownRight : ArrowUpRight;
 
   return (
     <>
-      <div className={`due-card ${status}`}>
+      <div className={`due-card ${status} due-${transaction.type}`}>
         <div className="due-card-header">
           <div className="due-card-name-wrapper">
-            <ArrowDownRight size={18} className="due-icon" />
-            <span className="due-card-name">{expense.name}</span>
+            <Icon size={18} className="due-icon" />
+            <span className="due-card-name">{transaction.name}</span>
           </div>
           <label className="paid-checkbox">
             <input
               type="checkbox"
-              checked={expense.paid}
+              checked={transaction.paid}
               onChange={(e) => handlePaidChange(e.target.checked)}
               disabled={loading}
             />
@@ -92,12 +97,12 @@ function DueExpenseItem({ expense, onUpdate }: DueExpenseItemProps) {
         </div>
         <div className="due-card-info">
           <span className="due-card-label">Valor</span>
-          <span className="due-card-value">{formatCurrency(expense.amount)}</span>
+          <span className="due-card-value">{formatCurrency(transaction.amount)}</span>
         </div>
         <div className="due-card-info">
           <span className="due-card-label">Data de vencimento</span>
           <span className="due-card-value due-date-value">
-            {formatDate(expense.due_date) || "Nenhuma data"}
+            {formatDate(transaction.dueDate) || "Nenhuma data"}
           </span>
         </div>
       </div>
@@ -111,4 +116,4 @@ function DueExpenseItem({ expense, onUpdate }: DueExpenseItemProps) {
   );
 }
 
-export default DueExpenseItem;
+export default DueTransactionItem;
