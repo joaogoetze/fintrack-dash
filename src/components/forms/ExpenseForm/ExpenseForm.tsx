@@ -6,7 +6,7 @@ import type { Expense, CreateExpenseInput, UpdateExpenseInput } from "../../../t
 import { createExpense, updateExpense } from "../../../api/expenses";
 import { getWallets } from "../../../api/wallets";
 import { createExpenseRequest, updateExpenseSchema } from "../../../types";
-import { toDateInputValue } from "../../../utils/formatters";
+import { toDateInputValue, todayLocal } from "../../../utils/formatters";
 import SelectField from "../../ui/SelectField/SelectField";
 
 import "./ExpenseForm.css";
@@ -23,7 +23,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
 
   const [name, setName] = useState(initial?.name || "");
   const [amount, setAmount] = useState(initial?.amount?.toString() || "");
-  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : todayLocal());
   const [isRecurring, setIsRecurring] = useState(
     Boolean(initial?.recurringTransactionId)
   );
@@ -226,7 +226,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
                 const checked = e.target.checked;
                 setIsRecurring(checked);
                 if (checked) {
-                  setDueDate(toDateInputValue(new Date().toISOString().split("T")[0]));
+                  setDueDate(toDateInputValue(todayLocal()));
                 } else {
                   setDueDate(null);
                 }

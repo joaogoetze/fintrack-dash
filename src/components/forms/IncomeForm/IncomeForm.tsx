@@ -6,7 +6,7 @@ import type { Income, CreateIncomeInput, UpdateIncomeInput } from "../../../type
 import { createIncome, updateIncome } from "../../../api/incomes";
 import { getWallets } from "../../../api/wallets";
 import { createIncomeRequest, updateIncomeSchema } from "../../../types";
-import { toDateInputValue } from "../../../utils/formatters";
+import { toDateInputValue, todayLocal } from "../../../utils/formatters";
 import SelectField from "../../ui/SelectField/SelectField";
 
 import "./IncomeForm.css";
@@ -24,7 +24,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   const [name, setName] = useState(initial?.name || "");
   const [updateRec, setUpdateRec] = useState(false);
   const [amount, setAmount] = useState(initial?.amount?.toString() || "");
-  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : todayLocal());
   const [dueDate, setDueDate] = useState<string | null>(
     initial?.dueDate
       ? toDateInputValue(initial.dueDate)
@@ -220,7 +220,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
                 const checked = e.target.checked;
                 setIsRecurring(checked);
                 if (checked) {
-                  setDueDate(toDateInputValue(new Date().toISOString().split("T")[0]));
+                  setDueDate(toDateInputValue(todayLocal()));
                 } else {
                   setDueDate(null);
                 }
