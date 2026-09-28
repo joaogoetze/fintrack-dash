@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import Header from "./components/layout/Header/Header";
 import Dashboard from "./pages/Dashboard";
@@ -11,6 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/expenses" element={<Expenses />} />

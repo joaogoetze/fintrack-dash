@@ -5,6 +5,7 @@ import type { Expense } from "../../../types";
 
 import { updateExpensePaid, deleteExpense } from "../../../api/expenses";
 import { formatDate, formatCurrency } from "../../../utils/formatters";
+import { toastApiError } from "../../../utils/toast";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
 
@@ -38,7 +39,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
       );
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao atualizar status de pagamento:", err);
+      toastApiError(err, "Erro ao atualizar pagamento");
     } finally {
       setLoading(false);
     }
@@ -50,7 +51,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
       await updateExpensePaid(expense.id, true, walletId, Number(expense.amount));
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao marcar como pago:", err);
+      toastApiError(err, "Erro ao marcar como pago");
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
       setIsDeleteModalOpen(false);
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao excluir despesa:", err);
+      toastApiError(err, "Erro ao excluir despesa");
     } finally {
       setLoading(false);
     }

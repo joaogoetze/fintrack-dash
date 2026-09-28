@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { Wallet } from "../../../types";
 
 import { getWallets } from "../../../api/wallets";
+import { toastApiError } from "../../../utils/toast";
 import DynamicModal from "../DynamicModal/DynamicModal";
 import SelectField from "../SelectField/SelectField";
 
@@ -24,7 +25,7 @@ function SelectWalletModal({ isOpen, onClose, onConfirm }: SelectWalletModalProp
         const data = await getWallets();
         setWallets(data);
       } catch (err) {
-        console.error("Erro ao carregar wallets:", err);
+        toastApiError(err, "Erro ao carregar carteiras");
       }
     };
     loadWallets();

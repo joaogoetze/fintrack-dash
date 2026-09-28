@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { z } from "zod";
 
 import type { Income, CreateIncomeInput, UpdateIncomeInput } from "../../../types";
 
@@ -7,6 +6,7 @@ import { createIncome, updateIncome } from "../../../api/incomes";
 import { getWallets } from "../../../api/wallets";
 import { createIncomeRequest, updateIncomeSchema } from "../../../types";
 import { toDateInputValue, todayLocal } from "../../../utils/formatters";
+import { toastApiError } from "../../../utils/toast";
 import SelectField from "../../ui/SelectField/SelectField";
 
 import "./IncomeForm.css";
@@ -36,7 +36,6 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   const [walletId, setWalletId] = useState<number | "">(initial?.walletId || "");
   const [wallets, setWallets] = useState<{ id: number; name: string; balance: number }[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -45,31 +44,23 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
         const data = await getWallets();
         setWallets(data);
       } catch (err) {
-        console.error("Erro ao carregar wallets:", err);
+        toastApiError(err, "Erro ao carregar carteiras");
       }
     };
     loadWallets();
   }, []);
 
-  const validateField = (field: string, value: unknown) => {
-    const schema = isEdit ? updateIncomeSchema : createIncomeRequest;
-    const shape = schema.shape as Record<string, z.ZodTypeAny>;
-    const result = shape[field]?.safeParse(value);
-    if (result && !result.success) {
-      const firstIssue = result.error.issues?.[0];
-      setFieldErrors(prev => ({ ...prev, [field]: firstIssue?.message || "Erro" }));
-    } else {
-      setFieldErrors(prev => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
-    }
+  const clearFieldError = (field: string) => {
+    setFieldErrors(prev => {
+      if (!(field in prev)) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setFieldErrors({});
 
     const amountValue = Number(amount.replace(",", "."));
@@ -89,8 +80,6 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
 
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors;
-      const firstError = Object.values(errors)[0]?.[0] || "Erro de validação";
-      setError(firstError);
       const fieldErrorsMap: Record<string, string> = {};
       Object.entries(errors).forEach(([key, val]) => {
         if (val?.[0]) fieldErrorsMap[key] = val[0];
@@ -110,7 +99,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
       onSaved();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao salvar");
+      toastApiError(err, "Erro ao salvar receita");
     } finally {
       setLoading(false);
     }
@@ -118,8 +107,6 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
-      {error && <div className="form-error">{error}</div>}
-
       <div className="form-field">
         <label htmlFor="income-name">Nome</label>
         <input
@@ -128,10 +115,11 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
           value={name}
           onChange={(e) => {
             setName(e.target.value);
-            validateField("name", e.target.value.trim());
+            clearFieldError("name");
           }}
           placeholder="Ex: Salário"
           aria-invalid={!!fieldErrors.name}
+          autoFocus
         />
         {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
       </div>
@@ -147,7 +135,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
             const value = e.target.value;
             if (/^\d*[,.]?\d*$/.test(value)) {
               setAmount(value);
-              validateField("amount", Number(value.replace(",", ".")));
+              clearFieldError("amount");
             }
           }}
           placeholder="0,00"
@@ -164,7 +152,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
           value={date}
           onChange={(e) => {
             setDate(e.target.value);
-            validateField("date", e.target.value);
+            clearFieldError("date");
           }}
           aria-invalid={!!fieldErrors.date}
         />
@@ -180,7 +168,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
           value={dueDate ?? ""}
           onChange={(e) => {
             setDueDate(e.target.value);
-            validateField("dueDate", e.target.value || null);
+            clearFieldError("dueDate");
           }}
           aria-invalid={!!fieldErrors.dueDate}
         />
@@ -196,7 +184,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
           onChange={(e) => {
             const value = e.target.value === "" ? "" : Number(e.target.value);
             setWalletId(value);
-            validateField("walletId", value || null);
+            clearFieldError("walletId");
           }}
         >
           <option value="">Selecione uma carteira</option>

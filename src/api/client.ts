@@ -17,7 +17,11 @@ async function request(
     const data = await response.json();
 
     if (!response.ok) {
-        throw new Error(data.message);
+        const message =
+            typeof data?.message === "string" && data.message
+                ? data.message
+                : "Erro inesperado";
+        throw new Error(message);
     }
 
     return data;

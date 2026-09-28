@@ -6,6 +6,7 @@ import type { DueTransaction } from "../../../types";
 import { updateExpensePaid } from "../../../api/expenses";
 import { updateIncomePaid } from "../../../api/incomes";
 import { formatDate, toDateInputValue, formatCurrency } from "../../../utils/formatters";
+import { toastApiError } from "../../../utils/toast";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
 
 import "./DueTransactionItem.css";
@@ -55,7 +56,7 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
       await updatePaid(newPaid, transaction.walletId ?? undefined);
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao atualizar status de pagamento:", err);
+      toastApiError(err, "Erro ao atualizar pagamento");
     } finally {
       setLoading(false);
     }
@@ -67,7 +68,7 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
       await updatePaid(true, walletId);
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao marcar como pago:", err);
+      toastApiError(err, "Erro ao marcar como pago");
     } finally {
       setLoading(false);
     }

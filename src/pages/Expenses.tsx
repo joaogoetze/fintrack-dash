@@ -9,6 +9,7 @@ import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
 import { useMonthStore } from "../stores/monthStore";
+import { toastApiError } from "../utils/toast";
 
 function Expenses() {
   const activeMonth = useMonthStore((state) => state.activeMonth);
@@ -18,9 +19,13 @@ function Expenses() {
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
   const loadExpenses = useCallback(async () => {
-    const { expenses, total } = await getExpenses(activeMonth);
-    setExpenses(expenses);
-    setTotal(total);
+    try {
+      const { expenses, total } = await getExpenses(activeMonth);
+      setExpenses(expenses);
+      setTotal(total);
+    } catch (err) {
+      toastApiError(err, "Erro ao carregar despesas");
+    }
   }, [activeMonth]);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import WalletForm from "../components/forms/WalletForm/WalletForm";
 import WalletItem from "../components/items/WalletItem/WalletItem";
 import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
+import { toastApiError } from "../utils/toast";
 
 function Wallets() {
     const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -14,13 +15,17 @@ function Wallets() {
     const [editingWallet, setEditingWallet] = useState<Wallet | undefined>(undefined);
 
     const loadWallets = useCallback(async () => {
-        const data = await getWallets();
-        setWallets(data);
+        try {
+            const data = await getWallets();
+            setWallets(data);
+        } catch (err) {
+            toastApiError(err, "Erro ao carregar carteiras");
+        }
     }, []);
 
     useEffect(() => {
-        getWallets().then(setWallets);
-    }, []);
+        loadWallets();
+    }, [loadWallets]);
 
     return (
         <div className="page-container">

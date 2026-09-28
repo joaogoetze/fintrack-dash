@@ -5,6 +5,7 @@ import type { Income } from "../../../types";
 
 import { updateIncomePaid, deleteIncome } from "../../../api/incomes";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
+import { toastApiError } from "../../../utils/toast";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
 
@@ -37,7 +38,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
       );
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao atualizar status de pagamento:", err);
+      toastApiError(err, "Erro ao atualizar pagamento");
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
       await updateIncomePaid(income.id, true, walletId, Number(income.amount));
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao marcar como pago:", err);
+      toastApiError(err, "Erro ao marcar como pago");
     } finally {
       setLoading(false);
     }
@@ -62,7 +63,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
       setIsDeleteModalOpen(false);
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao excluir receita:", err);
+      toastApiError(err, "Erro ao excluir receita");
     } finally {
       setLoading(false);
     }

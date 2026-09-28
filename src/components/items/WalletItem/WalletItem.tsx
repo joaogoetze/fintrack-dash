@@ -5,6 +5,7 @@ import type { Wallet } from "../../../types";
 
 import { deleteWallet } from "../../../api/wallets";
 import { formatCurrency } from "../../../utils/formatters";
+import { toastApiError } from "../../../utils/toast";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 
 import "./WalletItem.css";
@@ -25,7 +26,7 @@ function WalletItem({ wallet, onUpdate, onEdit }: WalletItemProps) {
       setIsDeleteModalOpen(false);
       onUpdate?.();
     } catch (err) {
-      console.error("Erro ao excluir carteira:", err);
+      toastApiError(err, "Erro ao excluir carteira");
     }
   };
 

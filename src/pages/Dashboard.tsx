@@ -6,6 +6,7 @@ import { getSummary, getDueTransactions } from "../api/dashboard";
 import DueTransactionItem from "../components/items/DueTransactionItem/DueTransactionItem";
 import InfoCard from "../components/ui/InfoCard/InfoCard";
 import { useMonthStore } from "../stores/monthStore";
+import { toastApiError } from "../utils/toast";
 
 function Dashboard() {
     const activeMonth = useMonthStore((state) => state.activeMonth);
@@ -13,12 +14,24 @@ function Dashboard() {
     const [dueTransactions, setDueTransactions] = useState<DueTransaction[]>([]);
 
     const loadDueTransactions = useCallback(async () => {
-        const data = await getDueTransactions(activeMonth);
-        setDueTransactions(data);
+        try {
+            const data = await getDueTransactions(activeMonth);
+            setDueTransactions(data);
+        } catch (err) {
+            toastApiError(err, "Erro ao carregar vencimentos");
+        }
     }, [activeMonth]);
 
     useEffect(() => {
-        getSummary(activeMonth).then(setSummary);
+        const loadSummary = async () => {
+            try {
+                const data = await getSummary(activeMonth);
+                setSummary(data);
+            } catch (err) {
+                toastApiError(err, "Erro ao carregar resumo");
+            }
+        };
+        loadSummary();
         loadDueTransactions();
     }, [activeMonth, loadDueTransactions]);
 
