@@ -77,13 +77,10 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
       isRecurring,
     };
 
-    console.log("form data", formData);
-
     const schema = isEdit ? updateIncomeSchema : createIncomeRequest;
     const result = schema.safeParse(formData);
 
     if (!result.success) {
-      console.log("result", result);
       
       const errors = result.error.flatten().fieldErrors;
       const fieldErrorsMap: Record<string, string> = {};
