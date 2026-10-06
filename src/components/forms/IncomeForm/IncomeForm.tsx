@@ -33,6 +33,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   const [isRecurring, setIsRecurring] = useState(
     Boolean(initial?.recurringTransactionId)
   );
+  const id = initial?.id || null;
   const [walletId, setWalletId] = useState<number | "">(initial?.walletId || "");
   const [wallets, setWallets] = useState<{ id: number; name: string; balance: number }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
 
     const amountValue = Number(amount.replace(",", "."));
     const formData = {
+      id,
       name: name.trim(),
       amount: amountValue,
       date,
@@ -75,10 +77,14 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
       isRecurring,
     };
 
+    console.log("form data", formData);
+
     const schema = isEdit ? updateIncomeSchema : createIncomeRequest;
     const result = schema.safeParse(formData);
 
     if (!result.success) {
+      console.log("result", result);
+      
       const errors = result.error.flatten().fieldErrors;
       const fieldErrorsMap: Record<string, string> = {};
       Object.entries(errors).forEach(([key, val]) => {
