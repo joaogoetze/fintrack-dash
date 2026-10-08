@@ -27,8 +27,8 @@ export function createExpense(data: CreateExpenseInput): Promise<Expense> {
     return api.post("/expenses", data, createExpenseRequest, expenseSchema);
 }
 
-export function updateExpensePaid(id: number, paid: boolean, walletId?: number, amount?: number): Promise<Expense> {
-    const data: UpdateExpensePaidStatusInput = { paid, walletId, amount };
+export function updateExpensePaid(id: number, paid: boolean, walletId?: number, amount?: number, date?: string | null): Promise<Expense> {
+    const data: UpdateExpensePaidStatusInput = { paid, walletId, amount, date };
     return api.put(`/expenses/${id}/paid`, data, updateExpensePaidStatusSchema, expenseSchema);
 }
 

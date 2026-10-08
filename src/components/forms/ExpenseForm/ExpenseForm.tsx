@@ -23,7 +23,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
 
   const [name, setName] = useState(initial?.name || "");
   const [amount, setAmount] = useState(initial?.amount?.toString() || "");
-  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : todayLocal());
+  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : "");
   const [isRecurring, setIsRecurring] = useState(
     Boolean(initial?.recurringTransactionId)
   );
@@ -71,7 +71,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       id,
       name: name.trim(),
       amount: amountValue,
-      date,
+      date: date ? date : null,
       dueDate,
       walletId: walletId || undefined,
       updateRecurringTransaction: updateRec,
@@ -154,7 +154,12 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
         <label htmlFor="expense-date">Data do pagamento</label>
         <input
           id="expense-date"
-          type="date"
+          type={date ? "date" : "text"}
+          placeholder="Nenhuma data selecionada"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (!e.target.value) e.target.type = "text";
+          }}
           value={date}
           onChange={(e) => {
             setDate(e.target.value);
@@ -170,7 +175,12 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
         <label htmlFor="expense-due-date">Data de vencimento</label>
         <input
           id="expense-due-date"
-          type="date"
+          type={dueDate ? "date" : "text"}
+          placeholder="Nenhuma data selecionada"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (!e.target.value) e.target.type = "text";
+          }}
           value={dueDate ?? ""}
           onChange={(e) => {
             setDueDate(e.target.value);

@@ -23,7 +23,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && !income.walletId) {
+    if (newPaid && (!income.walletId || !income.date)) {
       setIsWalletModalOpen(true);
       return;
     }
@@ -34,7 +34,8 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
         income.id,
         newPaid,
         income.walletId ?? undefined,
-        Number(income.amount)
+        Number(income.amount),
+        income.date
       );
       onUpdate?.();
     } catch (err) {
@@ -44,10 +45,10 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
     }
   };
 
-  const handleWalletConfirm = async (walletId: number) => {
+  const handleWalletConfirm = async (walletId: number, date?: string | null) => {
     setLoading(true);
     try {
-      await updateIncomePaid(income.id, true, walletId, Number(income.amount));
+      await updateIncomePaid(income.id, true, walletId, Number(income.amount), date);
       onUpdate?.();
     } catch (err) {
       toastApiError(err, "Erro ao marcar como pago");
@@ -86,7 +87,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Data:</span>
-          <span className="item-date">{formatDate(income.date)}</span>
+          <span className="item-date">{formatDate(income.date) || "-"}</span>
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Vencimento:</span>
@@ -132,6 +133,8 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
         onConfirm={handleWalletConfirm}
+        initialWalletId={income.walletId}
+        initialDate={income.date}
       />
 
       <ConfirmDialog

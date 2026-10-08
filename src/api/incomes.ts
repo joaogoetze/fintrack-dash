@@ -27,8 +27,8 @@ export function createIncome(data: CreateIncomeInput): Promise<Income> {
     return api.post("/incomes", data, createIncomeRequest, incomeSchema);
 }
 
-export function updateIncomePaid(id: number, paid: boolean, walletId?: number, amount?: number): Promise<Income> {
-    const data: UpdateIncomePaidStatusInput = { paid, walletId, amount };
+export function updateIncomePaid(id: number, paid: boolean, walletId?: number, amount?: number, date?: string | null): Promise<Income> {
+    const data: UpdateIncomePaidStatusInput = { paid, walletId, amount, date };
     return api.put(`/incomes/${id}/paid`, data, updateIncomePaidStatusSchema, incomeSchema);
 }
 

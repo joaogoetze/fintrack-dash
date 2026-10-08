@@ -4,7 +4,7 @@ const expenseSchema = z.object({
   id: z.number(),
   name: z.string().min(1, "Nome é obrigatório"),
   amount: z.coerce.number().positive("Valor deve ser positivo"),
-  date: z.string().date("Data inválida"),
+  date: z.string().date("Data inválida").nullable(),
   walletId: z.number().nullable(),
   walletName: z.string().optional().nullable(),
   recurringTransactionId: z.number().nullable(),
@@ -16,6 +16,7 @@ const expenseSchema = z.object({
 export const createExpenseSchema = expenseSchema
   .omit({ id: true, deletedAt: true, walletName: true })
   .partial({
+    date: true,
     walletId: true,
     recurringTransactionId: true,
     dueDate: true,
@@ -51,6 +52,7 @@ export const updateExpensePaidStatusSchema = z.object({
   paid: z.boolean(),
   walletId: z.number().nullable().optional(),
   amount: z.coerce.number().optional(),
+  date: z.string().date().nullable().optional(),
 });
 
 export type UpdateExpensePaidStatusInput = z.infer<typeof updateExpensePaidStatusSchema>;

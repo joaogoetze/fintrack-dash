@@ -24,7 +24,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && !expense.walletId) {
+    if (newPaid && (!expense.walletId || !expense.date)) {
       setIsWalletModalOpen(true);
       return;
     }
@@ -35,7 +35,8 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
         expense.id,
         newPaid,
         expense.walletId ?? undefined,
-        Number(expense.amount)
+        Number(expense.amount),
+        expense.date
       );
       onUpdate?.();
     } catch (err) {
@@ -45,10 +46,10 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
     }
   };
 
-  const handleWalletConfirm = async (walletId: number) => {
+  const handleWalletConfirm = async (walletId: number, date?: string | null) => {
     setLoading(true);
     try {
-      await updateExpensePaid(expense.id, true, walletId, Number(expense.amount));
+      await updateExpensePaid(expense.id, true, walletId, Number(expense.amount), date);
       onUpdate?.();
     } catch (err) {
       toastApiError(err, "Erro ao marcar como pago");
@@ -87,7 +88,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Data:</span>
-          <span className="item-date">{formatDate(expense.date)}</span>
+          <span className="item-date">{formatDate(expense.date) || "-"}</span>
         </div>
         <div className="item-cell item-date-cell">
           <span className="item-label-mobile">Vencimento:</span>
@@ -134,6 +135,8 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
         onConfirm={handleWalletConfirm}
+        initialWalletId={expense.walletId}
+        initialDate={expense.date}
       />
 
       <ConfirmDialog

@@ -40,20 +40,20 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
   const [loading, setLoading] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
-  const updatePaid = (newPaid: boolean, walletId?: number) =>
+  const updatePaid = (newPaid: boolean, walletId?: number, date?: string | null) =>
     transaction.type === "expense"
-      ? updateExpensePaid(transaction.id, newPaid, walletId, Number(transaction.amount))
-      : updateIncomePaid(transaction.id, newPaid, walletId, Number(transaction.amount));
+      ? updateExpensePaid(transaction.id, newPaid, walletId, Number(transaction.amount), date)
+      : updateIncomePaid(transaction.id, newPaid, walletId, Number(transaction.amount), date);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && !transaction.walletId) {
+    if (newPaid && (!transaction.walletId || !transaction.date)) {
       setIsWalletModalOpen(true);
       return;
     }
 
     setLoading(true);
     try {
-      await updatePaid(newPaid, transaction.walletId ?? undefined);
+      await updatePaid(newPaid, transaction.walletId ?? undefined, transaction.date);
       onUpdate?.();
     } catch (err) {
       toastApiError(err, "Erro ao atualizar pagamento");
@@ -62,10 +62,10 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
     }
   };
 
-  const handleWalletConfirm = async (walletId: number) => {
+  const handleWalletConfirm = async (walletId: number, date?: string | null) => {
     setLoading(true);
     try {
-      await updatePaid(true, walletId);
+      await updatePaid(true, walletId, date);
       onUpdate?.();
     } catch (err) {
       toastApiError(err, "Erro ao marcar como pago");
@@ -112,6 +112,8 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
         onConfirm={handleWalletConfirm}
+        initialWalletId={transaction.walletId}
+        initialDate={transaction.date}
       />
     </>
   );

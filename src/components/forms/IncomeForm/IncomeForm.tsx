@@ -24,7 +24,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   const [name, setName] = useState(initial?.name || "");
   const [updateRec, setUpdateRec] = useState(false);
   const [amount, setAmount] = useState(initial?.amount?.toString() || "");
-  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : todayLocal());
+  const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : "");
   const [dueDate, setDueDate] = useState<string | null>(
     initial?.dueDate
       ? toDateInputValue(initial.dueDate)
@@ -69,7 +69,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
       id,
       name: name.trim(),
       amount: amountValue,
-      date,
+      date: date ? date : null,
       dueDate,
       walletId: walletId || undefined,
       updateRecurringTransaction: updateRec,
@@ -151,7 +151,12 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
         <label htmlFor="income-date">Data do recebimento</label>
         <input
           id="income-date"
-          type="date"
+          type={date ? "date" : "text"}
+          placeholder="Nenhuma data selecionada"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (!e.target.value) e.target.type = "text";
+          }}
           value={date}
           onChange={(e) => {
             setDate(e.target.value);
@@ -167,7 +172,12 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
         <label htmlFor="income-due-date">Data de vencimento</label>
         <input
           id="income-due-date"
-          type="date"
+          type={dueDate ? "date" : "text"}
+          placeholder="Nenhuma data selecionada"
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (!e.target.value) e.target.type = "text";
+          }}
           value={dueDate ?? ""}
           onChange={(e) => {
             setDueDate(e.target.value);
