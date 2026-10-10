@@ -42,8 +42,8 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   useEffect(() => {
     const loadWallets = async () => {
       try {
-        const data = await getWallets();
-        setWallets(data);
+        const { wallets } = await getWallets();
+        setWallets(wallets);
       } catch (err) {
         toastApiError(err, "Erro ao carregar carteiras");
       }
