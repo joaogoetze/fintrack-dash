@@ -4,11 +4,12 @@ import {
   updateWalletSchema,
   type Wallet,
   type CreateWalletInput,
-  type UpdateWalletInput
+  type UpdateWalletInput,
+  type WalletsResponse
 } from "../types";
 import { api } from "./client";
 
-export function getWallets(): Promise<Wallet[]> {
+export function getWallets(): Promise<WalletsResponse> {
     return api.get("/wallets");
 }
 

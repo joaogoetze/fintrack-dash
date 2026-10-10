@@ -12,11 +12,11 @@ function NavigationBar() {
             <NavLink to="/" className={getLinkClass}>
                 <LayoutDashboard size={16} /> Visão geral
             </NavLink>
-            <NavLink to="/expenses" className={getLinkClass}>
-                <ArrowDownCircle size={16} /> Despesas
-            </NavLink>
             <NavLink to="/incomes" className={getLinkClass}>
                 <Receipt size={16} /> Receitas
+            </NavLink>
+            <NavLink to="/expenses" className={getLinkClass}>
+                <ArrowDownCircle size={16} /> Despesas
             </NavLink>
             <NavLink to="/wallets" className={getLinkClass}>
                 <Wallet size={16} /> Carteiras
