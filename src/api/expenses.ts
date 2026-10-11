@@ -15,6 +15,8 @@ import { api } from "./client";
 const expensesResponseSchema = z.object({
   expenses: z.array(expenseSchema),
   total: z.number(),
+  totalPaid: z.number().default(0),
+  totalUnpaid: z.number().default(0),
 });
 
 type ExpensesResponse = z.infer<typeof expensesResponseSchema>;

@@ -15,14 +15,18 @@ function Expenses() {
   const activeMonth = useMonthStore((state) => state.activeMonth);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [total, setTotal] = useState(0);
+  const [totalPaid, setTotalPaid] = useState(0);
+  const [totalUnpaid, setTotalUnpaid] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
   const loadExpenses = useCallback(async () => {
     try {
-      const { expenses, total } = await getExpenses(activeMonth);
+      const { expenses, total, totalPaid, totalUnpaid } = await getExpenses(activeMonth);
       setExpenses(expenses);
       setTotal(total);
+      setTotalPaid(totalPaid ?? 0);
+      setTotalUnpaid(totalUnpaid ?? 0);
     } catch (err) {
       toastApiError(err, "Erro ao carregar despesas");
     }
@@ -35,7 +39,14 @@ function Expenses() {
   return (
     <div className="page-container">
       <div className="page-header with-total">
-        <TotalCard label="Total" value={total} />
+        <TotalCard
+          label="Total Previsto"
+          value={total}
+          paidValue={totalPaid}
+          paidLabel="Já Pago"
+          unpaidValue={totalUnpaid}
+          unpaidLabel="A Pagar"
+        />
         <PrimaryButton buttonText="+ Despesa" onClick={() => { setEditingExpense(undefined); setIsModalOpen(true); }} />
       </div>
       <DynamicModal

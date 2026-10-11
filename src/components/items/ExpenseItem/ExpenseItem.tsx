@@ -77,7 +77,7 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
 
   return (
     <>
-      <div className={`expense-item-row ${!expense.paid ? "unpaid" : ""}`}>
+      <div className={`expense-item-row ${!expense.paid ? "" : "unpaid"}`}>
         <div className="item-cell item-name-cell">
           <ArrowDownRight size={18} className="expense-icon" />
           <span className="item-name">{expense.name}</span>

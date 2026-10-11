@@ -76,7 +76,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
 
   return (
     <>
-      <div className={`income-item-row ${!income.paid ? "unpaid" : ""}`}>
+      <div className={`income-item-row ${!income.paid ? "" : "unpaid"}`}>
         <div className="item-cell item-name-cell">
           <ArrowUpRight size={18} className="income-icon" />
           <span className="item-name">{income.name}</span>

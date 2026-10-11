@@ -33,6 +33,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
   const [isRecurring, setIsRecurring] = useState(
     Boolean(initial?.recurringTransactionId)
   );
+  const paid = initial?.paid || true;
   const id = initial?.id || null;
   const [walletId, setWalletId] = useState<number | "">(initial?.walletId || "");
   const [wallets, setWallets] = useState<{ id: number; name: string; balance: number }[]>([]);
@@ -75,6 +76,7 @@ function IncomeForm({ initial, onClose, onSaved }: IncomeFormProps) {
       updateRecurringTransaction: updateRec,
       recurringTransactionId: recurring_transaction_id,
       isRecurring,
+      paid
     };
 
     const schema = isEdit ? updateIncomeSchema : createIncomeRequest;

@@ -8,15 +8,91 @@
   align-items: center;
   gap: 8px;
 }
+
 .total-card-label {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
 .total-card-value {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* Detailed variant */
+.total-card.total-card-detailed {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.total-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.total-card-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.total-card-subitem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.total-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.total-dot-paid {
+  background-color: #10b981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+}
+
+.total-dot-unpaid {
+  background-color: #94a3b8;
+}
+
+.total-card-subvalue {
+  font-size: 14px;
   font-weight: 600;
+}
+
+.text-paid {
+  color: #10b981;
+}
+
+.text-unpaid {
+  color: var(--text-primary);
+}
+
+.total-card-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.total-card-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #059669, #10b981);
+  transition: width 0.4s ease;
 }

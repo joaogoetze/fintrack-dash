@@ -8,16 +8,139 @@
   flex-direction: column;
   gap: 8px;
   flex: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.info-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.info-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .info-card-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+.info-card-percentage {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .info-card-value {
-  font-size: 28px;
+  font-size: 26px;
   color: var(--text-primary);
   font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.info-card-breakdown {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-card-progress-bar {
+  height: 6px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.info-card-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-card-progress-fill.fill-income {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+.info-card-progress-fill.fill-expense {
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+}
+
+.info-card-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  padding-top: 2px;
+}
+
+.info-card-subitem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subitem-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.indicator-paid {
+  background-color: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+}
+
+.indicator-unpaid {
+  background-color: #94a3b8;
+  opacity: 0.8;
+}
+
+.subitem-label {
+  color: var(--text-secondary);
+}
+
+.subitem-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.info-card-secondary-footer {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.secondary-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.secondary-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.secondary-value.positive {
+  color: #10b981;
+}
+
+.secondary-value.negative {
+  color: var(--error-color);
 }

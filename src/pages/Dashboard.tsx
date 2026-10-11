@@ -16,7 +16,9 @@ function Dashboard() {
     const loadDueTransactions = useCallback(async () => {
         try {
             const data = await getDueTransactions(activeMonth);
+            const dataSummary = await getSummary(activeMonth);
             setDueTransactions(data);
+            setSummary(dataSummary)
         } catch (err) {
             toastApiError(err, "Erro ao carregar vencimentos");
         }
@@ -42,14 +44,27 @@ function Dashboard() {
                     <InfoCard
                         label="Receitas"
                         value={summary.totalIncome}
+                        paidValue={summary.paidIncome}
+                        paidLabel="Recebido"
+                        unpaidValue={summary.unpaidIncome}
+                        unpaidLabel="A receber"
+                        type="income"
                     />
                     <InfoCard
                         label="Despesas"
                         value={summary.totalExpenses}
+                        paidValue={summary.paidExpenses}
+                        paidLabel="Já pago"
+                        unpaidValue={summary.unpaidExpenses}
+                        unpaidLabel="A pagar"
+                        type="expense"
                     />
                     <InfoCard
-                        label="Balanço"
+                        label="Saldo Realizado"
                         value={summary.balance}
+                        secondaryLabel="Previsão no mês"
+                        secondaryValue={summary.projectedBalance}
+                        type="balance"
                     />
                 </div>
             ) : (
