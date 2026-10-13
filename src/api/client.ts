@@ -1,18 +1,33 @@
 import { z } from "zod";
+import { useAuthStore } from "../stores/authStore";
 
-const API_BASE = "https://api-fintrack.joaogoetze.com.br";
-//const API_BASE = "http://localhost:3001";
+//const API_BASE = "https://api-fintrack.joaogoetze.com.br";
+const API_BASE = "http://localhost:3001";
 
 async function request(
     path: string,
     options: RequestInit = {}
 ) {
+    const { token, activeWorkspaceId } = useAuthStore.getState();
+
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...((options.headers as Record<string, string>) || {}),
+    };
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    if (activeWorkspaceId) {
+        headers["x-workspace-id"] = String(activeWorkspaceId);
+    }
+
     const response = await fetch(`${API_BASE}${path}`, {
         ...options,
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers,
     });
+
 
     const data = await response.json();
 

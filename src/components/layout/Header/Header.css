@@ -2,7 +2,65 @@
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
   padding: 8px 0;
+  width: 100%;
+}
+
+.header-container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 24px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
+
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0; /* Essencial para flex-children não forçarem overflow */
+  flex-wrap: nowrap;
+}
+
+.header-slider-col {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0; /* Permite que o slider encolha e faça scroll interno se necessário */
+}
+
+.header-user-col {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.header-nav-row {
+  margin-top: 2px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 16px;
+  }
+
+  .header-top-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .header-slider-col,
+  .header-user-col {
+    width: 100%;
+  }
+
+  .header-user-col {
+    justify-content: space-between;
+  }
+}
+
+
