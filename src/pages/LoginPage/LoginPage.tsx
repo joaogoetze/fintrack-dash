@@ -12,12 +12,15 @@ export const LoginPage: React.FC = () => {
 
   const handleSuccess = async (credentialResponse: any) => {
     try {
+      console.log("Credenciais", credentialResponse);
       if (!credentialResponse.credential) {
         toast.error("Falha ao obter credenciais do Google");
         return;
       }
 
       const res = await authApi.loginWithGoogle(credentialResponse.credential);
+      console.log("Res", res);
+      
       setAuth(res.token, res.user, res.workspaces);
       toast.success(`Bem-vindo, ${res.user.name.split(" ")[0]}!`);
     } catch (error: any) {

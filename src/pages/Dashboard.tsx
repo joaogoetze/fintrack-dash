@@ -6,10 +6,12 @@ import { getSummary, getDueTransactions } from "../api/dashboard";
 import DueTransactionItem from "../components/items/DueTransactionItem/DueTransactionItem";
 import InfoCard from "../components/ui/InfoCard/InfoCard";
 import { useMonthStore } from "../stores/monthStore";
+import { useAuthStore } from "../stores/authStore";
 import { toastApiError } from "../utils/toast";
 
 function Dashboard() {
     const activeMonth = useMonthStore((state) => state.activeMonth);
+    const activeWorkspaceId = useAuthStore((state) => state.activeWorkspaceId);
     const [summary, setSummary] = useState<Summary | null>(null);
     const [dueTransactions, setDueTransactions] = useState<DueTransaction[]>([]);
 
@@ -35,7 +37,8 @@ function Dashboard() {
         };
         loadSummary();
         loadDueTransactions();
-    }, [activeMonth, loadDueTransactions]);
+    }, [activeMonth, activeWorkspaceId, loadDueTransactions]);
+
 
     return (
         <div className="page-container">

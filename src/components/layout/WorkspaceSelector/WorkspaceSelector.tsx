@@ -35,6 +35,8 @@ export const WorkspaceSelector: React.FC = () => {
             ))}
           </select>
           <ChevronDown size={14} className="select-arrow" />
+
+
         </div>
       </div>
 

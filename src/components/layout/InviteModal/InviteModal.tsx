@@ -119,6 +119,8 @@ export const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose }) => 
               </select>
             </div>
 
+
+
             <div className="form-group">
               <label>E-mail Google do convidado:</label>
               <input

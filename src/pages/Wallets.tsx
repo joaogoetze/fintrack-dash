@@ -9,8 +9,10 @@ import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 import { toastApiError } from "../utils/toast";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
+import { useAuthStore } from "../stores/authStore";
 
 function Wallets() {
+    const activeWorkspaceId = useAuthStore((state) => state.activeWorkspaceId);
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [total, setTotal] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +30,8 @@ function Wallets() {
 
     useEffect(() => {
         loadWallets();
-    }, [loadWallets]);
+    }, [loadWallets, activeWorkspaceId]);
+
 
     return (
         <div className="page-container">

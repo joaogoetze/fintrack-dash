@@ -9,10 +9,12 @@ import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
 import { useMonthStore } from "../stores/monthStore";
+import { useAuthStore } from "../stores/authStore";
 import { toastApiError } from "../utils/toast";
 
 function Incomes() {
     const activeMonth = useMonthStore((state) => state.activeMonth);
+    const activeWorkspaceId = useAuthStore((state) => state.activeWorkspaceId);
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [total, setTotal] = useState(0);
     const [totalPaid, setTotalPaid] = useState(0);
@@ -34,7 +36,8 @@ function Incomes() {
 
     useEffect(() => {
         loadIncomes();
-    }, [loadIncomes]);
+    }, [loadIncomes, activeWorkspaceId]);
+
 
     return (
         <div className="page-container">
