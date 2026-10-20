@@ -4,10 +4,12 @@ import { useState } from "react";
 import type { Income } from "../../../types";
 
 import { updateIncomePaid, deleteIncome } from "../../../api/incomes";
+import { getDueStatus } from "../../../utils/dueStatus";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+import StatusChip from "../../ui/StatusChip/StatusChip";
 
 import "./IncomeItem.css";
 
@@ -74,6 +76,8 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
     ? `O valor de ${formatCurrency(income.amount)} será subtraído da carteira. Deseja excluir esta receita?`
     : "Deseja excluir esta receita?";
 
+  const status = getDueStatus(income);
+
   return (
     <>
       <div className={`income-item-row ${!income.paid ? "" : "unpaid"}`}>
@@ -97,16 +101,17 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
           <span className="item-label-mobile">Carteira:</span>
           <span className="item-wallet">{income.walletName || "-"}</span>
         </div>
+        <div className="item-cell item-status-cell">
+          <span className="item-label-mobile">Status:</span>
+          <StatusChip
+            status={status}
+            paid={income.paid}
+            type="income"
+            onClick={() => handlePaidChange(!income.paid)}
+            disabled={loading}
+          />
+        </div>
         <div className="item-cell item-actions-cell">
-          <label className="paid-checkbox" title="Marcar como pago">
-            <input
-              type="checkbox"
-              checked={income.paid}
-              onChange={(e) => handlePaidChange(e.target.checked)}
-              disabled={loading}
-            />
-            <span className="paid-label-text">Pago</span>
-          </label>
           <button
             type="button"
             className="item-action-btn edit-btn"
@@ -116,16 +121,15 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
           >
             <Pencil size={18} />
           </button>
-          
-            <button
-              type="button"
-              className="item-action-btn delete-btn"
-              onClick={() => setIsDeleteModalOpen(true)}
-              disabled={loading}
-              title="Excluir"
-            >
-              <Trash2 size={18} />
-            </button>
+          <button
+            type="button"
+            className="item-action-btn delete-btn"
+            onClick={() => setIsDeleteModalOpen(true)}
+            disabled={loading}
+            title="Excluir"
+          >
+            <Trash2 size={18} />
+          </button>
         </div>
       </div>
 

@@ -1,39 +1,21 @@
-import { ArrowDownRight, ArrowUpRight, CheckSquare } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 
 import type { DueTransaction } from "../../../types";
 
 import { updateExpensePaid } from "../../../api/expenses";
 import { updateIncomePaid } from "../../../api/incomes";
-import { formatDate, toDateInputValue, formatCurrency } from "../../../utils/formatters";
+import { getDueStatus } from "../../../utils/dueStatus";
+import { formatDate, formatCurrency } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+import StatusChip from "../../ui/StatusChip/StatusChip";
 
 import "./DueTransactionItem.css";
 
 interface DueTransactionItemProps {
   transaction: DueTransaction;
   onUpdate?: () => void;
-}
-
-type DueStatus = "due-paid" | "due-today" | "due-soon" | "due-later";
-
-function getDueStatus(transaction: Pick<DueTransaction, "paid" | "dueDate">): DueStatus {
-  if (transaction.paid) return "due-paid";
-
-  const dueStr = toDateInputValue(transaction.dueDate);
-  if (!dueStr) return "due-later";
-
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const due = new Date(dueStr + "T00:00:00");
-
-  if (due <= today) return "due-today";
-
-  const diffDays = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  if (diffDays <= 3) return "due-soon";
-
-  return "due-later";
 }
 
 function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) {
@@ -85,16 +67,13 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
             <Icon size={18} className="due-icon" />
             <span className="due-card-name">{transaction.name}</span>
           </div>
-          <label className="paid-checkbox">
-            <input
-              type="checkbox"
-              checked={transaction.paid}
-              onChange={(e) => handlePaidChange(e.target.checked)}
-              disabled={loading}
-            />
-            <CheckSquare size={18} />
-            <span>Pago</span>
-          </label>
+          <StatusChip
+            status={status}
+            paid={transaction.paid}
+            type={transaction.type}
+            onClick={() => handlePaidChange(!transaction.paid)}
+            disabled={loading}
+          />
         </div>
         <div className="due-card-info">
           <span className="due-card-label">Valor</span>
@@ -102,7 +81,7 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
         </div>
         <div className="due-card-info">
           <span className="due-card-label">Data de vencimento</span>
-          <span className="due-card-value due-date-value">
+          <span className="due-card-value">
             {formatDate(transaction.dueDate) || "Nenhuma data"}
           </span>
         </div>

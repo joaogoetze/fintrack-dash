@@ -8,10 +8,12 @@ import Goals from "./pages/Goals";
 import Incomes from "./pages/Incomes";
 import Wallets from "./pages/Wallets";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import OnboardingPage from "./pages/OnboardingPage/OnboardingPage";
 import { useAuthStore } from "./stores/authStore";
 
 function App() {
   const token = useAuthStore((state) => state.token);
+  const workspaces = useAuthStore((state) => state.workspaces);
 
   if (!token) {
     return (
@@ -21,6 +23,16 @@ function App() {
       </>
     );
   }
+
+  if (workspaces.length === 0) {
+    return (
+      <>
+        <Toaster position="top-right" richColors closeButton />
+        <OnboardingPage />
+      </>
+    );
+  }
+
 
   return (
     <BrowserRouter>

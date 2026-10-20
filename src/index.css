@@ -165,8 +165,12 @@ body {
 }
 
 .header-actions-cell {
-  flex: 0 0 100px;
+  flex: 0 0 64px;
   text-align: right;
+}
+
+.header-status-cell {
+  flex: 0 0 110px;
 }
 
 @media (max-width: 768px) {

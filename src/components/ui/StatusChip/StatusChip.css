@@ -1,0 +1,93 @@
+/* Paid toggle pill */
+.paid-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.18s ease, border-color 0.18s ease;
+  white-space: nowrap;
+  line-height: 1;
+  user-select: none;
+}
+
+.paid-toggle--paid {
+  background: rgba(4, 120, 87, 0.15);
+  border-color: rgba(4, 120, 87, 0.4);
+  color: #34d399;
+}
+
+.paid-toggle--paid:hover:not(:disabled) {
+  background: rgba(4, 120, 87, 0.25);
+  border-color: rgba(52, 211, 153, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
+}
+
+.paid-toggle--paid:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.paid-toggle--pending {
+  background: rgba(234, 179, 8, 0.12);
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #facc15;
+}
+
+.paid-toggle--pending:hover:not(:disabled) {
+  background: rgba(234, 179, 8, 0.22);
+  border-color: rgba(250, 204, 21, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
+}
+
+.paid-toggle--pending:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.paid-toggle--overdue {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+
+.paid-toggle--overdue:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(248, 113, 113, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.paid-toggle--overdue:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.paid-toggle--later {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.25);
+  color: var(--text-secondary);
+}
+
+.paid-toggle--later:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.18);
+  border-color: rgba(148, 163, 184, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.15);
+}
+
+.paid-toggle--later:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.paid-toggle:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

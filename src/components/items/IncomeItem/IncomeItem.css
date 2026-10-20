@@ -50,9 +50,14 @@
 }
 
 .item-actions-cell {
-  flex: 0 0 100px;
+  flex: 0 0 64px;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 4px;
+}
+
+.item-status-cell {
+  flex: 0 0 110px;
+  justify-content: flex-start;
 }
 
 .item-label-mobile {
@@ -62,32 +67,6 @@
   margin-right: 6px;
 }
 
-.paid-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.paid-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--success-color);
-  cursor: pointer;
-}
-
-.paid-checkbox input:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-@media (min-width: 769px) {
-  .paid-label-text {
-    display: none;
-  }
-}
 
 .item-action-btn {
   background: none;

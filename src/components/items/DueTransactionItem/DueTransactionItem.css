@@ -57,32 +57,4 @@
   color: var(--text-primary);
   font-weight: 500;
 }
-.due-card.due-today .due-date-value {
-  color: var(--error-color);
-}
-.due-card.due-soon .due-date-value {
-  color: var(--warning-color);
-}
-.due-card.due-later .due-date-value {
-  color: var(--text-secondary);
-}
-.due-card.due-paid .due-date-value {
-  color: var(--brand-primary);
-}
-.paid-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-.paid-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--success-color);
-}
-.paid-checkbox svg {
-  color: var(--success-color);
-}
+

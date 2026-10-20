@@ -4,10 +4,12 @@ import { useState } from "react";
 import type { Expense } from "../../../types";
 
 import { updateExpensePaid, deleteExpense } from "../../../api/expenses";
+import { getDueStatus } from "../../../utils/dueStatus";
 import { formatDate, formatCurrency } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
 import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+import StatusChip from "../../ui/StatusChip/StatusChip";
 
 import "./ExpenseItem.css";
 
@@ -75,6 +77,8 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
     ? `O valor de R$ ${expense.amount} será adicionado de volta à carteira. Deseja excluir esta despesa?`
     : "Deseja excluir esta despesa?";
 
+  const status = getDueStatus(expense);
+
   return (
     <>
       <div className={`expense-item-row ${!expense.paid ? "" : "unpaid"}`}>
@@ -98,16 +102,17 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
           <span className="item-label-mobile">Carteira:</span>
           <span className="item-wallet">{expense.walletName || "-"}</span>
         </div>
+        <div className="item-cell item-status-cell">
+          <span className="item-label-mobile">Status:</span>
+          <StatusChip
+            status={status}
+            paid={expense.paid}
+            type="expense"
+            onClick={() => handlePaidChange(!expense.paid)}
+            disabled={loading}
+          />
+        </div>
         <div className="item-cell item-actions-cell">
-          <label className="paid-checkbox" title="Marcar como pago">
-            <input
-              type="checkbox"
-              checked={expense.paid}
-              onChange={(e) => handlePaidChange(e.target.checked)}
-              disabled={loading}
-            />
-            <span className="paid-label-text">Pago</span>
-          </label>
           <button
             type="button"
             className="item-action-btn edit-btn"
@@ -117,17 +122,15 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
           >
             <Pencil size={18} />
           </button>
-
-            <button
-              type="button"
-              className="item-action-btn delete-btn"
-              onClick={() => setIsDeleteModalOpen(true)}
-              disabled={loading}
-              title="Excluir"
-            >
-              <Trash2 size={18} />
-            </button>
-
+          <button
+            type="button"
+            className="item-action-btn delete-btn"
+            onClick={() => setIsDeleteModalOpen(true)}
+            disabled={loading}
+            title="Excluir"
+          >
+            <Trash2 size={18} />
+          </button>
         </div>
       </div>
 

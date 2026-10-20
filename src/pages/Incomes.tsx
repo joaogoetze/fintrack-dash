@@ -73,6 +73,7 @@ function Incomes() {
             <div className="header-cell">Data</div>
             <div className="header-cell">Vencimento</div>
             <div className="header-cell">Carteira</div>
+            <div className="header-cell header-status-cell">Status</div>
             <div className="header-cell header-actions-cell">Ações</div>
           </div>
           {incomes.map(income =>

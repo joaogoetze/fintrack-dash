@@ -94,14 +94,14 @@ export const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose }) => 
             onClick={() => setActiveTab("new_workspace")}
             type="button"
           >
-            <PlusCircle size={15} /> Novo Espaço Conjunto
+            <PlusCircle size={15} /> Novo Espaço
           </button>
         </div>
 
         {activeTab === "invite" ? (
           <form onSubmit={handleSendInvite} className="modal-form">
             <p className="modal-description">
-              Convide seu parceiro(a) ou familiar pelo e-mail Google para terem acesso conjunto às finanças.
+              Convide um membro pelo e-mail Google para terem acesso compartilhado às finanças deste espaço.
             </p>
 
             <div className="form-group">
@@ -113,13 +113,11 @@ export const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose }) => 
               >
                 {workspaces.map((ws) => (
                   <option key={ws.id} value={ws.id}>
-                    {ws.name} {ws.isPersonal ? "(Pessoal)" : "(Compartilhado)"}
+                    {ws.name}
                   </option>
                 ))}
               </select>
             </div>
-
-
 
             <div className="form-group">
               <label>E-mail Google do convidado:</label>
@@ -145,7 +143,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose }) => 
         ) : (
           <form onSubmit={handleCreateWorkspace} className="modal-form">
             <p className="modal-description">
-              Crie uma conta/espaço novo dedicado para despesas em conjunto (ex: <em>"Casal"</em>, <em>"Casa / Família"</em>).
+              Crie um novo espaço financeiro dedicado (ex: <em>"Pessoal"</em>, <em>"Casal"</em>, <em>"Casa / Família"</em>).
             </p>
 
             <div className="form-group">

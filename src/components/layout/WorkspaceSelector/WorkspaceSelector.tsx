@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../../../stores/authStore";
-import { Users, User as UserIcon, ChevronDown, LogOut, UserPlus } from "lucide-react";
+import { WalletCards, ChevronDown, LogOut, UserPlus } from "lucide-react";
 import InviteModal from "../InviteModal/InviteModal";
 import NotificationsPopover from "../NotificationsPopover/NotificationsPopover";
 import "./WorkspaceSelector.css";
@@ -11,30 +11,26 @@ export const WorkspaceSelector: React.FC = () => {
 
   if (!user) return null;
 
-  const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId) || workspaces[0];
-
   return (
     <div className="user-workspace-controls">
       {/* Seletor de Espaço */}
       <div className="workspace-dropdown-wrapper">
         <div className="workspace-badge">
-          {activeWorkspace?.isPersonal ? (
-            <UserIcon size={14} className="ws-icon" />
-          ) : (
-            <Users size={14} className="ws-icon ws-shared" />
-          )}
+          <WalletCards size={15} className="ws-icon" />
           <select
             className="workspace-select"
             value={activeWorkspaceId || ""}
             onChange={(e) => setActiveWorkspaceId(Number(e.target.value))}
           >
+
             {workspaces.map((ws) => (
               <option key={ws.id} value={ws.id}>
-                {ws.name} {ws.isPersonal ? "(Pessoal)" : "(Compartilhado)"}
+                {ws.name}
               </option>
             ))}
           </select>
           <ChevronDown size={14} className="select-arrow" />
+
 
 
         </div>
