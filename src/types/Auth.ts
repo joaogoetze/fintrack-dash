@@ -9,7 +9,6 @@ export interface User {
 export interface Workspace {
   id: number;
   name: string;
-  isPersonal?: boolean;
   ownerId: number;
   role?: 'owner' | 'admin' | 'member';
 }
