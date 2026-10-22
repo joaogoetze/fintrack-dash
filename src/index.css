@@ -59,6 +59,12 @@ body {
   justify-content: space-between;
 }
 
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .empty-state {
   text-align: center;
   font-size: 20px;
@@ -176,5 +182,18 @@ body {
 @media (max-width: 768px) {
   .items-list-header {
     display: none;
+  }
+
+  .page-header.with-total {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .page-header-actions {
+    width: 100%;
+  }
+
+  .page-header-actions .wallet-filter {
+    flex: 1;
   }
 }

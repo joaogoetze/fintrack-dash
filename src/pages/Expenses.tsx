@@ -1,15 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 
-import type { Expense } from "../types";
+import type { Expense, Wallet } from "../types";
 
 import { getExpenses } from "../api/expenses";
+import { getWallets } from "../api/wallets";
 import ExpenseForm from "../components/forms/ExpenseForm/ExpenseForm";
 import ExpenseItem from "../components/items/ExpenseItem/ExpenseItem";
 import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
-import { useMonthStore } from "../stores/monthStore";
+import WalletFilter from "../components/ui/WalletFilter/WalletFilter";
 import { useAuthStore } from "../stores/authStore";
+import { useMonthStore } from "../stores/monthStore";
 import { toastApiError } from "../utils/toast";
 
 function Expenses() {
@@ -19,6 +21,8 @@ function Expenses() {
   const [total, setTotal] = useState(0);
   const [totalPaid, setTotalPaid] = useState(0);
   const [totalUnpaid, setTotalUnpaid] = useState(0);
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [selectedWalletId, setSelectedWalletId] = useState<number | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
@@ -32,12 +36,28 @@ function Expenses() {
     } catch (err) {
       toastApiError(err, "Erro ao carregar despesas");
     }
+
+    try {
+      const { wallets } = await getWallets();
+      setWallets(wallets);
+    } catch (err) {
+      toastApiError(err, "Erro ao carregar carteiras");
+    }
   }, [activeMonth]);
 
   useEffect(() => {
     loadExpenses();
   }, [loadExpenses, activeWorkspaceId]);
 
+  const effectiveWalletId =
+    selectedWalletId === "" || wallets.some((wallet) => wallet.id === selectedWalletId)
+      ? selectedWalletId
+      : "";
+
+  const filteredExpenses =
+    effectiveWalletId === ""
+      ? expenses
+      : expenses.filter((expense) => expense.walletId === effectiveWalletId);
 
   return (
     <div className="page-container">
@@ -50,7 +70,14 @@ function Expenses() {
           unpaidValue={totalUnpaid}
           unpaidLabel="A Pagar"
         />
-        <PrimaryButton buttonText="+ Despesa" onClick={() => { setEditingExpense(undefined); setIsModalOpen(true); }} />
+        <div className="page-header-actions">
+          <WalletFilter
+            wallets={wallets}
+            value={effectiveWalletId}
+            onChange={setSelectedWalletId}
+          />
+          <PrimaryButton buttonText="+ Despesa" onClick={() => { setEditingExpense(undefined); setIsModalOpen(true); }} />
+        </div>
       </div>
       <DynamicModal
         isOpen={isModalOpen}
@@ -65,7 +92,7 @@ function Expenses() {
       </DynamicModal>
 
 
-      {expenses.length > 0 ? (
+      {filteredExpenses.length > 0 ? (
         <div className="items-list-container">
           <div className="items-list-header">
             <div className="header-cell header-name-cell">Nome</div>
@@ -76,7 +103,7 @@ function Expenses() {
             <div className="header-cell header-status-cell">Status</div>
             <div className="header-cell header-actions-cell">Ações</div>
           </div>
-          {expenses.map(expense =>
+          {filteredExpenses.map(expense =>
             <ExpenseItem
               key={expense.id}
               expense={expense}
@@ -86,7 +113,9 @@ function Expenses() {
           )}
         </div>
       ) : (
-        <div className="empty-state">Nenhuma despesa</div>
+        <div className="empty-state">
+          {expenses.length === 0 ? "Nenhuma despesa" : "Nenhuma despesa para esta carteira"}
+        </div>
       )}
 
     </div>

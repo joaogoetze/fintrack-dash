@@ -1,0 +1,19 @@
+.wallet-filter {
+  min-width: 200px;
+}
+
+.wallet-filter select {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 10px 36px 10px 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.wallet-filter select:focus {
+  border-color: var(--brand-primary);
+}
