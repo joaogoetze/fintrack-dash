@@ -1,5 +1,8 @@
+import { toast } from "sonner";
 import { z } from "zod";
+
 import { useAuthStore } from "../stores/authStore";
+import { SessionExpiredError } from "../utils/errors";
 
 const API_BASE = "https://api-fintrack.joaogoetze.com.br";
 //const API_BASE = "http://localhost:3001";
@@ -31,11 +34,19 @@ async function request(
 
     const data = await response.json();
 
+    if (response.status === 401 && token) {
+        if (useAuthStore.getState().token) {
+            useAuthStore.getState().logout();
+            toast.error("Sessão expirada. Faça login novamente.");
+        }
+        throw new SessionExpiredError();
+    }
+
     if (!response.ok) {
         const message =
-            typeof data?.message === "string" && data.message
-                ? data.message
-                : "Erro inesperado";
+            (typeof data?.message === "string" && data.message) ||
+            (typeof data?.error === "string" && data.error) ||
+            "Erro inesperado";
         throw new Error(message);
     }
 
