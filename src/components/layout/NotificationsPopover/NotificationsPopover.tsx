@@ -13,21 +13,21 @@ export const NotificationsPopover: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
-  const fetchInvites = async () => {
-    try {
-      const data = await authApi.getMyInvites();
-      setInvites(data);
-    } catch (error) {
-      console.error("Erro ao buscar convites:", error);
-    }
-  };
+  // const fetchInvites = async () => {
+  //   try {
+  //     const data = await authApi.getMyInvites();
+  //     setInvites(data);
+  //   } catch (error) {
+  //     console.error("Erro ao buscar convites:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchInvites();
-    // Atualiza a cada 30 segundos
-    const interval = setInterval(fetchInvites, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   fetchInvites();
+  //   // Atualiza a cada 30 segundos
+  //   const interval = setInterval(fetchInvites, 30000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // Fecha o popover ao clicar fora
   useEffect(() => {

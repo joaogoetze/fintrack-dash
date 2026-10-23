@@ -8,7 +8,7 @@ import { toastApiError } from "../../../utils/toast";
 import DynamicModal from "../DynamicModal/DynamicModal";
 import SelectField from "../SelectField/SelectField";
 
-interface SelectWalletModalProps {
+interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (walletId: number, date?: string | null) => void;
@@ -16,13 +16,13 @@ interface SelectWalletModalProps {
   initialDate?: string | null;
 }
 
-function SelectWalletModal({
+function PaymentModal({
   isOpen,
   onClose,
   onConfirm,
   initialWalletId,
   initialDate,
-}: SelectWalletModalProps) {
+}: PaymentModalProps) {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [walletId, setWalletId] = useState<number | "">(initialWalletId || "");
   const [paymentDate, setPaymentDate] = useState<string>("");
@@ -100,4 +100,4 @@ function SelectWalletModal({
   );
 }
 
-export default SelectWalletModal;
+export default PaymentModal;

@@ -24,6 +24,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
   const [name, setName] = useState(initial?.name || "");
   const [amount, setAmount] = useState(initial?.amount?.toString() || "");
   const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : "");
+  const [paid, setPaid] = useState(initial?.paid ?? false);
   const [isRecurring, setIsRecurring] = useState(
     Boolean(initial?.recurringTransactionId)
   );
@@ -36,7 +37,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       : null
   );
 
-  const paid = initial?.paid || true;
+  const isRecurringCreation = !isEdit && isRecurring;
   const id = initial?.id || null;
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -66,6 +67,11 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
     e.preventDefault();
     setFieldErrors({});
 
+    if (!isRecurringCreation && (date || paid) && !walletId) {
+      setFieldErrors({ walletId: "Carteira é obrigatória para despesas pagas" });
+      return;
+    }
+
     const amountValue = Number(amount.replace(",", "."));
     const formData = {
       id,
@@ -73,11 +79,11 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       amount: amountValue,
       date: date ? date : null,
       dueDate,
-      walletId: walletId || undefined,
+      walletId: walletId === "" ? null : walletId,
       updateRecurringTransaction: updateRec,
       recurringTransactionId: recurring_transaction_id,
       isRecurring,
-      paid
+      paid: isRecurringCreation ? false : Boolean(date) || paid
     };
 
     const schema = isEdit ? updateExpenseSchema : createExpenseRequest;
@@ -151,7 +157,9 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       </div>
 
       <div className="form-field">
-        <label htmlFor="expense-date">Data do pagamento</label>
+        <label htmlFor="expense-date">
+          {isRecurringCreation ? "Data de início" : "Data do pagamento"}
+        </label>
         <input
           id="expense-date"
           type={date ? "date" : "text"}
@@ -162,8 +170,11 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
           }}
           value={date}
           onChange={(e) => {
-            setDate(e.target.value);
+            const value = e.target.value;
+            setDate(value);
+            setPaid(Boolean(value));
             clearFieldError("date");
+            clearFieldError("walletId");
           }}
           aria-invalid={!!fieldErrors.date}
         />
@@ -193,7 +204,9 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       )}
 
       <div className="form-field">
-        <label htmlFor="expense-wallet">Carteira (opcional)</label>
+        <label htmlFor="expense-wallet">
+          Carteira{!isRecurringCreation && (date || paid) ? " (obrigatória)" : " (opcional)"}
+        </label>
         <SelectField
           id="expense-wallet"
           value={walletId}
@@ -213,6 +226,25 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
         {fieldErrors.walletId && <span className="field-error">{fieldErrors.walletId}</span>}
       </div>
 
+      {!isRecurringCreation && (
+        <div className="form-field form-field-checkbox">
+          <label htmlFor="expense-paid">
+            <input
+              id="expense-paid"
+              type="checkbox"
+              checked={Boolean(date) || paid}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setPaid(checked);
+                if (!checked) setDate("");
+                clearFieldError("walletId");
+              }}
+            />
+            Pago
+          </label>
+        </div>
+      )}
+
       {!isEdit && (
         <div className="form-field form-field-checkbox">
           <label htmlFor="expense-recurring">
@@ -224,8 +256,10 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
                 const checked = e.target.checked;
                 setIsRecurring(checked);
                 if (checked) {
+                  setPaid(false);
                   setDueDate(toDateInputValue(todayLocal()));
                 } else {
+                  setPaid(Boolean(date));
                   setDueDate(null);
                 }
               }}

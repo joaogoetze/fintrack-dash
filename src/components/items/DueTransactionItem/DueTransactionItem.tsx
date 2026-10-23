@@ -8,7 +8,7 @@ import { updateIncomePaid } from "../../../api/incomes";
 import { getDueStatus } from "../../../utils/dueStatus";
 import { formatDate, formatCurrency } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
-import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+import PaymentModal from "../../ui/PaymentModal/PaymentModal";
 import StatusChip from "../../ui/StatusChip/StatusChip";
 
 import "./DueTransactionItem.css";
@@ -28,14 +28,18 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
       : updateIncomePaid(transaction.id, newPaid, walletId, Number(transaction.amount), date);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && (!transaction.walletId || !transaction.date)) {
+    if (newPaid && !transaction.walletId) {
       setIsWalletModalOpen(true);
       return;
     }
 
     setLoading(true);
     try {
-      await updatePaid(newPaid, transaction.walletId ?? undefined, transaction.date);
+      await updatePaid(
+        newPaid,
+        transaction.walletId ?? undefined,
+        newPaid ? transaction.date : undefined
+      );
       onUpdate?.();
     } catch (err) {
       toastApiError(err, "Erro ao atualizar pagamento");
@@ -87,7 +91,7 @@ function DueTransactionItem({ transaction, onUpdate }: DueTransactionItemProps) 
         </div>
       </div>
 
-      <SelectWalletModal
+      <PaymentModal
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
         onConfirm={handleWalletConfirm}

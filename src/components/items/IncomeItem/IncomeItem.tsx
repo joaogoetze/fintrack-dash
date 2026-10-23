@@ -8,7 +8,7 @@ import { getDueStatus } from "../../../utils/dueStatus";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
 import ConfirmDialog from "../../ui/ConfirmDialog/ConfirmDialog";
-import SelectWalletModal from "../../ui/SelectWalletModal/SelectWalletModal";
+import PaymentModal from "../../ui/PaymentModal/PaymentModal";
 import StatusChip from "../../ui/StatusChip/StatusChip";
 
 import "./IncomeItem.css";
@@ -25,7 +25,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handlePaidChange = async (newPaid: boolean) => {
-    if (newPaid && (!income.walletId || !income.date)) {
+    if (newPaid && !income.walletId) {
       setIsWalletModalOpen(true);
       return;
     }
@@ -37,7 +37,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
         newPaid,
         income.walletId ?? undefined,
         Number(income.amount),
-        income.date
+        newPaid ? income.date : undefined
       );
       onUpdate?.();
     } catch (err) {
@@ -133,7 +133,7 @@ function IncomeItem({ income, onUpdate, onEdit }: IncomeItemProps) {
         </div>
       </div>
 
-      <SelectWalletModal
+      <PaymentModal
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
         onConfirm={handleWalletConfirm}
