@@ -202,7 +202,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
             setWalletId(value);
             clearFieldError("walletId");
           }}
-          aria-required={!isRecurringCreation && (date || paid)}
+          aria-required={!isRecurringCreation && Boolean(date || paid)}
         >
           <option value="">Selecione uma carteira</option>
           {wallets.map(wallet => (
