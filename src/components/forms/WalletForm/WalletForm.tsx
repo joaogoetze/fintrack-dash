@@ -5,6 +5,7 @@ import type { Wallet } from "../../../types";
 import { createWallet, updateWallet } from "../../../api/wallets";
 import { createWalletSchema, updateWalletSchema } from "../../../types";
 import { toastApiError } from "../../../utils/toast";
+import CurrencyInput from "../../ui/CurrencyInput/CurrencyInput";
 
 import "./WalletForm.css";
 
@@ -18,7 +19,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
   const isEdit = Boolean(initial);
 
   const [name, setName] = useState(initial?.name || "");
-  const [value, setValue] = useState(initial?.balance?.toString() || "");
+  const [value, setValue] = useState(initial?.balance ?? 0);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -35,8 +36,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
     e.preventDefault();
     setFieldErrors({});
 
-    const balance = Number(value.replace(",", "."));
-    const formData = { name: name.trim(), balance };
+    const formData = { name: name.trim(), balance: value };
 
     const schema = isEdit ? updateWalletSchema : createWalletSchema;
     const result = schema.safeParse(formData);
@@ -72,7 +72,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
   return (
     <form className="form" onSubmit={handleSubmit}>
       <div className="form-field">
-        <label htmlFor="wallet-name">Nome</label>
+        <label htmlFor="wallet-name" className="required">Nome</label>
         <input
           id="wallet-name"
           type="text"
@@ -83,27 +83,22 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
           }}
           placeholder="Ex: Banco"
           aria-invalid={!!fieldErrors.name}
+          aria-required="true"
           autoFocus
         />
         {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
       </div>
 
       <div className="form-field">
-        <label htmlFor="wallet-value">Valor (R$)</label>
-        <input
+        <label htmlFor="wallet-value">Valor</label>
+        <CurrencyInput
           id="wallet-value"
-          type="text"
-          inputMode="decimal"
           value={value}
-          onChange={(e) => {
-    const nextValue = e.target.value;
-
-    if (/^-?\d*[,.]?\d{0,2}$/.test(nextValue)) {
-      setValue(nextValue);
-      clearFieldError("balance");
-    }
-  }}
-          placeholder="0,00"
+          allowNegative
+          onChange={(nextValue) => {
+            setValue(nextValue);
+            clearFieldError("balance");
+          }}
           aria-invalid={!!fieldErrors.balance}
         />
         {fieldErrors.balance && <span className="field-error">{fieldErrors.balance}</span>}

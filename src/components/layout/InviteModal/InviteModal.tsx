@@ -120,7 +120,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose }) => 
             </div>
 
             <div className="form-group">
-              <label>E-mail Google do convidado:</label>
+              <label className="required">E-mail Google do convidado:</label>
               <input
                 type="email"
                 placeholder="exemplo@gmail.com"
@@ -147,7 +147,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose }) => 
             </p>
 
             <div className="form-group">
-              <label>Nome do Espaço:</label>
+              <label className="required">Nome do Espaço:</label>
               <input
                 type="text"
                 placeholder="Ex: Finanças do Casal"

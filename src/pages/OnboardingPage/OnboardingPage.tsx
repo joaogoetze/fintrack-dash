@@ -118,7 +118,7 @@ export const OnboardingPage: React.FC = () => {
 
         <form onSubmit={handleCreateWorkspace} className="onboarding-form">
           <div className="form-group">
-            <label htmlFor="ws-name">Nome do seu espaço financeiro</label>
+            <label htmlFor="ws-name" className="required">Nome do seu espaço financeiro</label>
             <input
               id="ws-name"
               type="text"

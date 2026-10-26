@@ -5,6 +5,7 @@ import type { Wallet } from "../../../types";
 import { getWallets } from "../../../api/wallets";
 import { toDateInputValue } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
+import DateInput from "../DateInput/DateInput";
 import DynamicModal from "../DynamicModal/DynamicModal";
 import SelectField from "../SelectField/SelectField";
 
@@ -52,11 +53,12 @@ function PaymentModal({
     <DynamicModal isOpen={isOpen} onClose={onClose} title="Confirmar pagamento">
       <div className="form">
         <div className="form-field">
-          <label htmlFor="wallet-select">Carteira</label>
+          <label htmlFor="wallet-select" className="required">Carteira</label>
           <SelectField
             id="wallet-select"
             value={walletId}
             onChange={(e) => setWalletId(e.target.value === "" ? "" : Number(e.target.value))}
+            aria-required
           >
             <option value="">Selecione uma carteira</option>
             {wallets.map((wallet) => (
@@ -68,17 +70,11 @@ function PaymentModal({
         </div>
 
         <div className="form-field">
-          <label htmlFor="payment-date">Data do pagamento (opcional)</label>
-          <input
+          <label htmlFor="payment-date">Data do pagamento</label>
+          <DateInput
             id="payment-date"
-            type={paymentDate ? "date" : "text"}
-            placeholder="Nenhuma data selecionada"
-            onFocus={(e) => (e.target.type = "date")}
-            onBlur={(e) => {
-              if (!e.target.value) e.target.type = "text";
-            }}
             value={paymentDate}
-            onChange={(e) => setPaymentDate(e.target.value)}
+            onChange={setPaymentDate}
           />
         </div>
 

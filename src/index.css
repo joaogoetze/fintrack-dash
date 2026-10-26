@@ -91,6 +91,12 @@ body {
   margin-bottom: 16px;
 }
 
+.form-field label.required::after,
+.form-group label.required::after {
+  content: " *";
+  color: var(--error-color);
+}
+
 /* Base Form Actions (Common for many forms) */
 .form-actions {
   display: flex;

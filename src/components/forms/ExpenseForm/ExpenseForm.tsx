@@ -7,6 +7,8 @@ import { getWallets } from "../../../api/wallets";
 import { createExpenseRequest, updateExpenseSchema } from "../../../types";
 import { toDateInputValue, todayLocal } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
+import CurrencyInput from "../../ui/CurrencyInput/CurrencyInput";
+import DateInput from "../../ui/DateInput/DateInput";
 import SelectField from "../../ui/SelectField/SelectField";
 
 import "./ExpenseForm.css";
@@ -22,7 +24,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
   const recurring_transaction_id = initial?.recurringTransactionId ?? null
 
   const [name, setName] = useState(initial?.name || "");
-  const [amount, setAmount] = useState(initial?.amount?.toString() || "");
+  const [amount, setAmount] = useState(initial?.amount ?? 0);
   const [date, setDate] = useState(initial?.date ? toDateInputValue(initial.date) : "");
   const [paid, setPaid] = useState(initial?.paid ?? false);
   const [isRecurring, setIsRecurring] = useState(
@@ -72,11 +74,10 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       return;
     }
 
-    const amountValue = Number(amount.replace(",", "."));
     const formData = {
       id,
       name: name.trim(),
-      amount: amountValue,
+      amount,
       date: date ? date : null,
       dueDate,
       walletId: walletId === "" ? null : walletId,
@@ -120,7 +121,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
   return (
     <form className="form" onSubmit={handleSubmit}>
       <div className="form-field">
-        <label htmlFor="expense-name">Nome</label>
+        <label htmlFor="expense-name" className="required">Nome</label>
         <input
           id="expense-name"
           type="text"
@@ -131,27 +132,23 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
           }}
           placeholder="Ex: Aluguel"
           aria-invalid={!!fieldErrors.name}
+          aria-required="true"
           autoFocus
         />
         {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
       </div>
 
       <div className="form-field">
-        <label htmlFor="expense-value">Valor (R$)</label>
-        <input
+        <label htmlFor="expense-value" className="required">Valor</label>
+        <CurrencyInput
           id="expense-value"
-          type="text"
-          inputMode="decimal"
           value={amount}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (/^\d*[,.]?\d*$/.test(value)) {
-              setAmount(value);
-              clearFieldError("amount");
-            }
+          onChange={(value) => {
+            setAmount(value);
+            clearFieldError("amount");
           }}
-          placeholder="0,00"
           aria-invalid={!!fieldErrors.amount}
+          aria-required
         />
         {fieldErrors.amount && <span className="field-error">{fieldErrors.amount}</span>}
       </div>
@@ -160,17 +157,10 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
         <label htmlFor="expense-date">
           {isRecurringCreation ? "Data de início" : "Data do pagamento"}
         </label>
-        <input
+        <DateInput
           id="expense-date"
-          type={date ? "date" : "text"}
-          placeholder="Nenhuma data selecionada"
-          onFocus={(e) => (e.target.type = "date")}
-          onBlur={(e) => {
-            if (!e.target.value) e.target.type = "text";
-          }}
           value={date}
-          onChange={(e) => {
-            const value = e.target.value;
+          onChange={(value) => {
             setDate(value);
             setPaid(Boolean(value));
             clearFieldError("date");
@@ -184,17 +174,11 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       {isRecurring && (
       <div className="form-field">
         <label htmlFor="expense-due-date">Data de vencimento</label>
-        <input
+        <DateInput
           id="expense-due-date"
-          type={dueDate ? "date" : "text"}
-          placeholder="Nenhuma data selecionada"
-          onFocus={(e) => (e.target.type = "date")}
-          onBlur={(e) => {
-            if (!e.target.value) e.target.type = "text";
-          }}
           value={dueDate ?? ""}
-          onChange={(e) => {
-            setDueDate(e.target.value);
+          onChange={(value) => {
+            setDueDate(value || null);
             clearFieldError("dueDate");
           }}
           aria-invalid={!!fieldErrors.dueDate}
@@ -204,8 +188,11 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       )}
 
       <div className="form-field">
-        <label htmlFor="expense-wallet">
-          Carteira{!isRecurringCreation && (date || paid) ? " (obrigatória)" : " (opcional)"}
+        <label
+          htmlFor="expense-wallet"
+          className={!isRecurringCreation && (date || paid) ? "required" : undefined}
+        >
+          Carteira
         </label>
         <SelectField
           id="expense-wallet"
@@ -215,6 +202,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
             setWalletId(value);
             clearFieldError("walletId");
           }}
+          aria-required={!isRecurringCreation && (date || paid)}
         >
           <option value="">Selecione uma carteira</option>
           {wallets.map(wallet => (

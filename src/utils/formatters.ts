@@ -1,3 +1,4 @@
+const MAX_CENTS_DIGITS = 12;
 
 export function formatCurrency(value: string | number | null | undefined): string {
   if (!value && value !== 0) return "";
@@ -8,7 +9,29 @@ export function formatCurrency(value: string | number | null | undefined): strin
   }).format(Number(value));
 }
 
+export function reaisToCents(reais: number): number {
+  if (!Number.isFinite(reais)) return 0;
+  return Math.round(reais * 100);
+}
 
+export function centsToReais(cents: number): number {
+  return cents / 100;
+}
+
+export function formatCentsToBRL(cents: number): string {
+  const sign = cents < 0 ? "-" : "";
+  const formatted = new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Math.abs(centsToReais(cents)));
+
+  return `R$ ${sign}${formatted}`;
+}
+
+export function parseDigitsToCents(raw: string): number {
+  const digits = raw.replace(/\D/g, "").slice(0, MAX_CENTS_DIGITS);
+  return Number(digits || "0");
+}
 
 export function formatDate(date: string | null): string | null {
   if (!date) return null;
