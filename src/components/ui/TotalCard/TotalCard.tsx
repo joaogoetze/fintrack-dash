@@ -13,7 +13,7 @@ export default function TotalCard({
   label,
   value,
   paidValue,
-  paidLabel = "Já Pago",
+  paidLabel = "Pago",
   unpaidValue,
   unpaidLabel = "A Pagar",
 }: TotalCardProps) {

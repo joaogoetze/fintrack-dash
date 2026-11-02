@@ -45,7 +45,7 @@ function Dashboard() {
             {summary ? (
                 <div className="dashboard-cards">
                     <InfoCard
-                        label="Receitas"
+                        label="Receitas previstas"
                         value={summary.totalIncome}
                         paidValue={summary.paidIncome}
                         paidLabel="Recebido"
@@ -54,18 +54,18 @@ function Dashboard() {
                         type="income"
                     />
                     <InfoCard
-                        label="Despesas"
+                        label="Despesas previstas"
                         value={summary.totalExpenses}
                         paidValue={summary.paidExpenses}
-                        paidLabel="Já pago"
+                        paidLabel="Pago"
                         unpaidValue={summary.unpaidExpenses}
                         unpaidLabel="A pagar"
                         type="expense"
                     />
                     <InfoCard
-                        label="Saldo Realizado"
+                        label="Saldo previsto"
                         value={summary.projectedBalance}
-                        secondaryLabel="Previsão no mês"
+                        secondaryLabel="Saldo confirmado"
                         secondaryValue={summary.balance}
                         type="balance"
                     />

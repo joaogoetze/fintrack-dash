@@ -66,7 +66,7 @@ function Expenses() {
           label="Total Previsto"
           value={total}
           paidValue={totalPaid}
-          paidLabel="Já Pago"
+          paidLabel="Pago"
           unpaidValue={totalUnpaid}
           unpaidLabel="A Pagar"
         />
