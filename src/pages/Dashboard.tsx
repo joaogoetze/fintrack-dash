@@ -64,9 +64,9 @@ function Dashboard() {
                     />
                     <InfoCard
                         label="Saldo Realizado"
-                        value={summary.balance}
+                        value={summary.projectedBalance}
                         secondaryLabel="Previsão no mês"
-                        secondaryValue={summary.projectedBalance}
+                        secondaryValue={summary.balance}
                         type="balance"
                     />
                 </div>
