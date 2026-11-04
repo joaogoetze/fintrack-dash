@@ -1,15 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 
-import type { Expense, Wallet } from "../types";
+import type { Expense, Wallet, Category } from "../types";
 
 import { getExpenses } from "../api/expenses";
 import { getWallets } from "../api/wallets";
+import { getCategories } from "../api/categories";
 import ExpenseForm from "../components/forms/ExpenseForm/ExpenseForm";
 import ExpenseItem from "../components/items/ExpenseItem/ExpenseItem";
 import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
 import WalletFilter from "../components/ui/WalletFilter/WalletFilter";
+import CategoryFilter from "../components/ui/CategoryFilter/CategoryFilter";
 import { useAuthStore } from "../stores/authStore";
 import { useMonthStore } from "../stores/monthStore";
 import { toastApiError } from "../utils/toast";
@@ -22,13 +24,16 @@ function Expenses() {
   const [totalPaid, setTotalPaid] = useState(0);
   const [totalUnpaid, setTotalUnpaid] = useState(0);
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedWalletId, setSelectedWalletId] = useState<number | "">("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
 
   const loadExpenses = useCallback(async () => {
     try {
       const { expenses, total, totalPaid, totalUnpaid } = await getExpenses(activeMonth);
+      console.log("expenses", expenses);
       setExpenses(expenses);
       setTotal(total);
       setTotalPaid(totalPaid ?? 0);
@@ -43,6 +48,13 @@ function Expenses() {
     } catch (err) {
       toastApiError(err, "Erro ao carregar carteiras");
     }
+
+    try {
+      const { categories } = await getCategories();
+      setCategories(categories);
+    } catch (err) {
+      toastApiError(err, "Erro ao carregar categorias");
+    }
   }, [activeMonth]);
 
   useEffect(() => {
@@ -54,10 +66,20 @@ function Expenses() {
       ? selectedWalletId
       : "";
 
-  const filteredExpenses =
-    effectiveWalletId === ""
-      ? expenses
-      : expenses.filter((expense) => expense.walletId === effectiveWalletId);
+  const effectiveCategoryId =
+    selectedCategoryId === "" || categories.some((category) => category.id === selectedCategoryId)
+      ? selectedCategoryId
+      : "";
+
+  const filteredExpenses = expenses.filter((expense) => {
+    if (effectiveWalletId !== "" && expense.walletId !== effectiveWalletId) {
+      return false;
+    }
+    if (effectiveCategoryId !== "" && expense.categoryId !== effectiveCategoryId) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <div className="page-container">
@@ -75,6 +97,11 @@ function Expenses() {
             wallets={wallets}
             value={effectiveWalletId}
             onChange={setSelectedWalletId}
+          />
+          <CategoryFilter
+            categories={categories}
+            value={effectiveCategoryId}
+            onChange={setSelectedCategoryId}
           />
           <PrimaryButton buttonText="+ Despesa" onClick={() => { setEditingExpense(undefined); setIsModalOpen(true); }} />
         </div>
@@ -100,6 +127,7 @@ function Expenses() {
             <div className="header-cell">Data</div>
             <div className="header-cell">Vencimento</div>
             <div className="header-cell">Carteira</div>
+            <div className="header-cell">Categoria</div>
             <div className="header-cell header-status-cell">Status</div>
             <div className="header-cell header-actions-cell">Ações</div>
           </div>
@@ -114,7 +142,7 @@ function Expenses() {
         </div>
       ) : (
         <div className="empty-state">
-          {expenses.length === 0 ? "Nenhuma despesa" : "Nenhuma despesa para esta carteira"}
+          {expenses.length === 0 ? "Nenhuma despesa" : "Nenhuma despesa para os filtros selecionados"}
         </div>
       )}
 

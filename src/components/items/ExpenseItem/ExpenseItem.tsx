@@ -102,6 +102,10 @@ function ExpenseItem({ expense, onUpdate, onEdit }: ExpenseItemProps) {
           <span className="item-label-mobile">Carteira:</span>
           <span className="item-wallet">{expense.walletName || "-"}</span>
         </div>
+        <div className="item-cell item-category-cell">
+          <span className="item-label-mobile">Categoria:</span>
+          <span className="item-category">{expense.categoryName || "-"}</span>
+        </div>
         <div className="item-cell item-status-cell">
           <span className="item-label-mobile">Status:</span>
           <StatusChip

@@ -7,6 +7,7 @@ interface TotalCardProps {
   paidLabel?: string;
   unpaidValue?: number;
   unpaidLabel?: string;
+  isCurrency?: boolean;
 }
 
 export default function TotalCard({
@@ -16,9 +17,12 @@ export default function TotalCard({
   paidLabel = "Pago",
   unpaidValue,
   unpaidLabel = "A Pagar",
+  isCurrency = true,
 }: TotalCardProps) {
-  const formatarMoeda = (valor: number): string =>
-    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valor);
+  const formatarValor = (valor: number): string =>
+    isCurrency
+      ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(valor)
+      : String(valor);
 
   const hasBreakdown = paidValue !== undefined && unpaidValue !== undefined;
   const progressPercent =
@@ -30,7 +34,7 @@ export default function TotalCard({
     return (
       <div className="total-card">
         <span className="total-card-label">{label}</span>
-        <span className="total-card-value">{formatarMoeda(value)}</span>
+        <span className="total-card-value">{formatarValor(value)}</span>
       </div>
     );
   }
@@ -39,7 +43,7 @@ export default function TotalCard({
     <div className="total-card total-card-detailed">
       <div className="total-card-section total-card-primary">
         <span className="total-card-label">{label}</span>
-        <span className="total-card-value">{formatarMoeda(value)}</span>
+        <span className="total-card-value">{formatarValor(value)}</span>
       </div>
 
       <div className="total-card-divider" />
@@ -49,7 +53,7 @@ export default function TotalCard({
           <span className="total-dot total-dot-paid" />
           <span className="total-card-label">{paidLabel}</span>
         </div>
-        <span className="total-card-subvalue text-paid">{formatarMoeda(paidValue || 0)}</span>
+        <span className="total-card-subvalue text-paid">{formatarValor(paidValue || 0)}</span>
       </div>
 
       <div className="total-card-divider" />
@@ -59,7 +63,7 @@ export default function TotalCard({
           <span className="total-dot total-dot-unpaid" />
           <span className="total-card-label">{unpaidLabel}</span>
         </div>
-        <span className="total-card-subvalue text-unpaid">{formatarMoeda(unpaidValue || 0)}</span>
+        <span className="total-card-subvalue text-unpaid">{formatarValor(unpaidValue || 0)}</span>
       </div>
 
       {value > 0 && (

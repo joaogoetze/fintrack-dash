@@ -21,6 +21,7 @@ function Wallets() {
     const loadWallets = useCallback(async () => {
         try {
             const { wallets, total } = await getWallets();
+            console.log("carteiras", wallets)
             setWallets(wallets);
             setTotal(total);
         } catch (err) {

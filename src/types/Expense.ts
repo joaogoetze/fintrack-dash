@@ -7,6 +7,8 @@ const expenseSchema = z.object({
   date: z.string().date("Data inválida").nullable(),
   walletId: z.number().nullable(),
   walletName: z.string().optional().nullable(),
+  categoryId: z.number().nullable().optional(),
+  categoryName: z.string().optional().nullable(),
   recurringTransactionId: z.number().nullable(),
   dueDate: z.string().date("Data de vencimento inválida").nullable(),
   paid: z.boolean(),
@@ -14,10 +16,11 @@ const expenseSchema = z.object({
 });
 
 export const createExpenseSchema = expenseSchema
-  .omit({ id: true, deletedAt: true, walletName: true })
+  .omit({ id: true, deletedAt: true, walletName: true, categoryName: true })
   .partial({
     date: true,
     walletId: true,
+    categoryId: true,
     recurringTransactionId: true,
     dueDate: true,
     paid: true,
@@ -32,13 +35,14 @@ export const createExpenseRequest = createExpenseSchema.merge(createExpenseOptio
 export type CreateExpenseInput = z.infer<typeof createExpenseRequest>;
 
 export const updateExpenseSchema = expenseSchema
-  .omit({ deletedAt: true, walletName: true })
+  .omit({ deletedAt: true, walletName: true, categoryName: true })
   .partial({
     name: true,
     amount: true,
     date: true,
     dueDate: true,
     walletId: true,
+    categoryId: true,
     recurringTransactionId: true,
     paid: true,
   })

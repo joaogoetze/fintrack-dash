@@ -16,10 +16,12 @@ interface WalletFormProps {
 }
 
 function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
+  console.log("initial", initial)
   const isEdit = Boolean(initial);
 
   const [name, setName] = useState(initial?.name || "");
   const [value, setValue] = useState(initial?.balance ?? 0);
+  console.log("valor", value)
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 

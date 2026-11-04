@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { 
   walletSchema, 
   createWalletSchema, 
@@ -9,8 +11,13 @@ import {
 } from "../types";
 import { api } from "./client";
 
+const walletsResponseSchema = z.object({
+  wallets: z.array(walletSchema),
+  total: z.number(),
+});
+
 export function getWallets(): Promise<WalletsResponse> {
-    return api.get("/wallets");
+    return api.get("/wallets", walletsResponseSchema);
 }
 
 export function createWallet(data: CreateWalletInput): Promise<Wallet> {

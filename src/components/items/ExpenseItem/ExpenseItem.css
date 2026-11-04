@@ -39,7 +39,8 @@
 
 .item-value-cell,
 .item-date-cell,
-.item-wallet-cell {
+.item-wallet-cell,
+.item-category-cell {
   flex: 1;
   color: var(--text-secondary);
 }

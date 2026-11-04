@@ -7,6 +7,7 @@ import Expenses from "./pages/Expenses";
 import Goals from "./pages/Goals";
 import Incomes from "./pages/Incomes";
 import Wallets from "./pages/Wallets";
+import Categories from "./pages/Categories";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import OnboardingPage from "./pages/OnboardingPage/OnboardingPage";
 import { useAuthStore } from "./stores/authStore";
@@ -43,6 +44,7 @@ function App() {
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/incomes" element={<Incomes />} />
         <Route path="/wallets" element={<Wallets />} />
+        <Route path="/categories" element={<Categories />} />
         <Route path="/goals" element={<Goals />} />
       </Routes>
     </BrowserRouter>

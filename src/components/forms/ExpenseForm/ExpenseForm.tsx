@@ -4,6 +4,7 @@ import type { Expense, CreateExpenseInput, UpdateExpenseInput } from "../../../t
 
 import { createExpense, updateExpense } from "../../../api/expenses";
 import { getWallets } from "../../../api/wallets";
+import { getCategories } from "../../../api/categories";
 import { createExpenseRequest, updateExpenseSchema } from "../../../types";
 import { toDateInputValue, todayLocal } from "../../../utils/formatters";
 import { toastApiError } from "../../../utils/toast";
@@ -33,6 +34,8 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
   const [updateRec, setUpdateRec] = useState(false);
   const [walletId, setWalletId] = useState<number | "">(initial?.walletId || "");
   const [wallets, setWallets] = useState<{ id: number; name: string; balance: number }[]>([]);
+  const [categoryId, setCategoryId] = useState<number | "">(initial?.categoryId || "");
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [dueDate, setDueDate] = useState<string | null>(
     initial?.dueDate
       ? toDateInputValue(initial.dueDate)
@@ -45,15 +48,22 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const loadWallets = async () => {
+    const loadData = async () => {
       try {
         const { wallets } = await getWallets();
         setWallets(wallets);
       } catch (err) {
         toastApiError(err, "Erro ao carregar carteiras");
       }
+
+      try {
+        const { categories } = await getCategories();
+        setCategories(categories);
+      } catch (err) {
+        toastApiError(err, "Erro ao carregar categorias");
+      }
     };
-    loadWallets();
+    loadData();
   }, []);
 
   const clearFieldError = (field: string) => {
@@ -81,6 +91,7 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
       date: date ? date : null,
       dueDate,
       walletId: walletId === "" ? null : walletId,
+      categoryId: categoryId === "" ? null : categoryId,
       updateRecurringTransaction: updateRec,
       recurringTransactionId: recurring_transaction_id,
       isRecurring,
@@ -212,6 +223,27 @@ function ExpenseForm({ initial, onClose, onSaved }: ExpenseFormProps) {
           ))}
         </SelectField>
         {fieldErrors.walletId && <span className="field-error">{fieldErrors.walletId}</span>}
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="expense-category">Categoria</label>
+        <SelectField
+          id="expense-category"
+          value={categoryId}
+          onChange={(e) => {
+            const value = e.target.value === "" ? "" : Number(e.target.value);
+            setCategoryId(value);
+            clearFieldError("categoryId");
+          }}
+        >
+          <option value="">Selecione uma categoria (opcional)</option>
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </SelectField>
+        {fieldErrors.categoryId && <span className="field-error">{fieldErrors.categoryId}</span>}
       </div>
 
       {!isRecurringCreation && (

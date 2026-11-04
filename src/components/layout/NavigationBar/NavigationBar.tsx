@@ -1,4 +1,4 @@
-import { LayoutDashboard, Receipt, Wallet, ArrowDownCircle } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, ArrowDownCircle, Tag } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 import "./NavigationBar.css";
@@ -20,6 +20,9 @@ function NavigationBar() {
             </NavLink>
             <NavLink to="/wallets" className={getLinkClass}>
                 <Wallet size={16} /> Carteiras
+            </NavLink>
+            <NavLink to="/categories" className={getLinkClass}>
+                <Tag size={16} /> Categorias
             </NavLink>
         </nav>
     );
