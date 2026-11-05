@@ -26,8 +26,6 @@ function CurrencyInput({
   "aria-required": ariaRequired,
   allowNegative = false,
 }: CurrencyInputProps) {
-  console.log("valueee", value);
-  console.log("tipo", typeof(value));
   const inputRef = useRef<HTMLInputElement>(null);
   const cents = reaisToCents(value);
   const display = formatCentsToBRL(cents);
