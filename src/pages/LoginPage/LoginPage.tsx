@@ -22,7 +22,6 @@ export const LoginPage: React.FC = () => {
       setAuth(res.token, res.user, res.workspaces);
       toast.success(`Bem-vindo, ${res.user.name.split(" ")[0]}!`);
     } catch (error: any) {
-      console.error(error);
       toast.error(error.message || "Erro ao conectar com sua conta Google");
     }
   };

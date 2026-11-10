@@ -14,18 +14,22 @@ interface StatusChipProps {
 
 const statusModifiers: Record<DueStatus, string> = {
   "due-paid": "paid-toggle--paid",
-  "due-today": "paid-toggle--overdue",
+  "due-today": "paid-toggle--today",
   "due-soon": "paid-toggle--pending",
   "due-later": "paid-toggle--later",
+  "past-due": "paid-toggle--past"
 };
 
 function StatusChip({ status, paid, type, onClick, disabled }: StatusChipProps) {
+  console.log("status", status);
   const label = status === "due-paid"
     ? type === "income" ? "Recebido" : "Pago"
     : status === "due-today"
-    ? "Vencido"
+    ? "Vence hoje"
     : status === "due-soon"
     ? "Em breve"
+    : status === "past-due"
+    ? "Vencido"
     : "Pendente";
 
   const title = paid

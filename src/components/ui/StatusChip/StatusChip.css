@@ -44,27 +44,45 @@
   border-color: rgba(250, 204, 21, 0.6);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
-}
+} 
 
 .paid-toggle--pending:active:not(:disabled) {
   transform: scale(0.95);
   box-shadow: none;
 }
 
-.paid-toggle--overdue {
+.paid-toggle--today {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.4);
+  color: #fb923c;
+}
+
+.paid-toggle--today:hover:not(:disabled) {
+  background: rgba(249, 115, 22, 0.22);
+  border-color: rgba(251, 146, 60, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
+.paid-toggle--today:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.paid-toggle--past{
   background: rgba(239, 68, 68, 0.12);
   border-color: rgba(239, 68, 68, 0.35);
   color: #f87171;
 }
 
-.paid-toggle--overdue:hover:not(:disabled) {
+.paid-toggle--past:hover:not(:disabled) {
   background: rgba(239, 68, 68, 0.22);
   border-color: rgba(248, 113, 113, 0.6);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
 }
 
-.paid-toggle--overdue:active:not(:disabled) {
+.paid-toggle--past:active:not(:disabled) {
   transform: scale(0.95);
   box-shadow: none;
 }

@@ -1,6 +1,6 @@
 import { toDateInputValue } from "./formatters";
 
-export type DueStatus = "due-paid" | "due-today" | "due-soon" | "due-later";
+export type DueStatus = "due-paid" | "due-today" | "due-soon" | "due-later" | "past-due";
 
 interface DueDateInfo {
   paid: boolean;
@@ -17,7 +17,9 @@ export function getDueStatus({ paid, dueDate }: DueDateInfo): DueStatus {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const due = new Date(dueStr + "T00:00:00");
 
-  if (due <= today) return "due-today";
+  if (due.getTime() === today.getTime()) return "due-today";
+
+  if (due < today) return "past-due";
 
   const diffDays = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays <= 3) return "due-soon";

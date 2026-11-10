@@ -33,7 +33,6 @@ function Expenses() {
   const loadExpenses = useCallback(async () => {
     try {
       const { expenses, total, totalPaid, totalUnpaid } = await getExpenses(activeMonth);
-      console.log("expenses", expenses);
       setExpenses(expenses);
       setTotal(total);
       setTotalPaid(totalPaid ?? 0);
