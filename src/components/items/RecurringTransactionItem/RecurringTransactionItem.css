@@ -1,0 +1,179 @@
+.recurring-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 10px;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.recurring-item-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.recurring-item-card.recurring-income {
+  border-left-color: var(--success-color, #10b981);
+}
+
+.recurring-item-card.recurring-expense {
+  border-left-color: var(--error-color, #ef4444);
+}
+
+.recurring-item-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.recurring-type-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.recurring-type-icon.income-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success-color, #10b981);
+}
+
+.recurring-type-icon.expense-icon {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--error-color, #ef4444);
+}
+
+.recurring-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.recurring-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.recurring-item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recurring-type-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.recurring-type-badge.badge-income {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.recurring-type-badge.badge-expense {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.recurring-category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.recurring-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.recurring-recurrence {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+}
+
+.recurring-start-date {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.recurring-item-amount-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.recurring-item-amount {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.recurring-item-amount.amount-income {
+  color: var(--success-color, #10b981);
+}
+
+.recurring-item-amount.amount-expense {
+  color: var(--error-color, #ef4444);
+}
+
+.recurring-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 640px) {
+  .recurring-item-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .recurring-item-amount-wrapper {
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+

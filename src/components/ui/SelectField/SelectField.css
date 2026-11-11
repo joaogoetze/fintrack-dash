@@ -7,8 +7,25 @@
 .select-wrapper select {
   width: 100%;
   appearance: none;
-  padding-right: 36px;
+  padding: 10px 36px 10px 12px;
   cursor: pointer;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-wrapper select:focus {
+  border-color: var(--brand-primary);
+}
+
+.select-wrapper select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .select-chevron {

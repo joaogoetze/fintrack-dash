@@ -20,6 +20,10 @@ export const authApi = {
     return api.post<Workspace>("/auth/workspaces", { name });
   },
 
+  updateWorkspace(workspaceId: number, name: string) {
+    return api.put<Workspace>(`/auth/workspaces/${workspaceId}`, { name });
+  },
+
   inviteUser(workspaceId: number, email: string) {
     return api.post<WorkspaceInvite>(`/auth/workspaces/${workspaceId}/invites`, { email });
   },

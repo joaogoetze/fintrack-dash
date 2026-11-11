@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+          import { useEffect, useState, useCallback } from "react";
 
 import type { Wallet } from "../types";
 
@@ -7,6 +7,7 @@ import WalletForm from "../components/forms/WalletForm/WalletForm";
 import WalletItem from "../components/items/WalletItem/WalletItem";
 import DynamicModal from "../components/ui/DynamicModal/DynamicModal";
 import PrimaryButton from "../components/ui/PrimaryButton/PrimaryButton";
+import TransferForm from "../components/forms/TransferForm/TransferForm";
 import { toastApiError } from "../utils/toast";
 import TotalCard from "../components/ui/TotalCard/TotalCard";
 import { useAuthStore } from "../stores/authStore";
@@ -16,6 +17,9 @@ function Wallets() {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [total, setTotal] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+
+
     const [editingWallet, setEditingWallet] = useState<Wallet | undefined>(undefined);
 
     const loadWallets = useCallback(async () => {
@@ -37,19 +41,36 @@ function Wallets() {
         <div className="page-container">
             <div className="page-header with-total">
                 <TotalCard label="Total" value={total} />
-                <PrimaryButton buttonText="+ Carteira" onClick={() => { setEditingWallet(undefined); setIsModalOpen(true); }} />
+                <div className="page-header-actions">
+                    {wallets.length > 1 && (
+                        <PrimaryButton buttonText="Transferir" onClick={() => setIsTransferModalOpen(true)} />
+                    )}
+                    <PrimaryButton buttonText="+ Carteira" onClick={() => { setEditingWallet(undefined); setIsModalOpen(true); }} />
+                </div>
             </div>
             <DynamicModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                title={editingWallet ? "Editar Carteira" : "Adicionar Carteira"}
+                isOpen={isTransferModalOpen}
+                onClose={() => setIsTransferModalOpen(false)}
+                title="Transferir entre Carteiras"
             >
-                <WalletForm
-                    initial={editingWallet}
-                    onClose={() => setIsModalOpen(false)}
+                <TransferForm
+                    wallets={wallets}
+                    onClose={() => setIsTransferModalOpen(false)}
                     onSaved={loadWallets}
                 />
             </DynamicModal>
+<DynamicModal
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    title={editingWallet ? "Editar Carteira" : "Adicionar Carteira"}
+>
+    <WalletForm
+        initial={editingWallet}
+        onClose={() => setIsModalOpen(false)}
+        onSaved={loadWallets}
+    />
+</DynamicModal>
+
 
             {wallets.length > 0 ? (
                 wallets.map(wallet =>

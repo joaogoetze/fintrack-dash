@@ -1,0 +1,46 @@
+.transfer-wallets-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.transfer-wallet-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.transfer-swap-btn {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.transfer-swap-btn:hover {
+  color: var(--brand-secondary);
+  border-color: var(--brand-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 600px) {
+  .transfer-wallets-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .transfer-swap-btn {
+    align-self: center;
+    margin-bottom: 0;
+  }
+}
+

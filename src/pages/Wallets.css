@@ -1,0 +1,26 @@
+.transfer-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.transfer-action-button:hover:not(:disabled) {
+  border-color: var(--brand-secondary);
+  color: var(--brand-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.transfer-action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

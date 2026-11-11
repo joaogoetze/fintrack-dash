@@ -1,4 +1,4 @@
-import { LayoutDashboard, Receipt, Wallet, ArrowDownCircle, Tag } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, ArrowDownCircle, Tag, Repeat } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 import "./NavigationBar.css";
@@ -17,6 +17,9 @@ function NavigationBar() {
             </NavLink>
             <NavLink to="/expenses" className={getLinkClass}>
                 <ArrowDownCircle size={16} /> Despesas
+            </NavLink>
+            <NavLink to="/recurring" className={getLinkClass}>
+                <Repeat size={16} /> Recorrentes
             </NavLink>
             <NavLink to="/wallets" className={getLinkClass}>
                 <Wallet size={16} /> Carteiras

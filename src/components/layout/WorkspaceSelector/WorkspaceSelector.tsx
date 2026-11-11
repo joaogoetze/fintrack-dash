@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../../../stores/authStore";
-import { WalletCards, ChevronDown, LogOut, UserPlus } from "lucide-react";
+import { WalletCards, ChevronDown, LogOut, UserPlus, Pencil } from "lucide-react";
 import InviteModal from "../InviteModal/InviteModal";
 import NotificationsPopover from "../NotificationsPopover/NotificationsPopover";
 import "./WorkspaceSelector.css";
 
 export const WorkspaceSelector: React.FC = () => {
   const { user, workspaces, activeWorkspaceId, setActiveWorkspaceId, logout } = useAuthStore();
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<"invite" | "new_workspace" | "rename">("invite");
 
   if (!user) return null;
 
@@ -22,7 +23,6 @@ export const WorkspaceSelector: React.FC = () => {
             value={activeWorkspaceId || ""}
             onChange={(e) => setActiveWorkspaceId(Number(e.target.value))}
           >
-
             {workspaces.map((ws) => (
               <option key={ws.id} value={ws.id}>
                 {ws.name}
@@ -30,16 +30,29 @@ export const WorkspaceSelector: React.FC = () => {
             ))}
           </select>
           <ChevronDown size={14} className="select-arrow" />
-
-
-
         </div>
       </div>
+
+      {/* Botão de Renomear Espaço */}
+      <button
+        className="action-icon-button"
+        onClick={() => {
+          setModalTab("rename");
+          setIsModalOpen(true);
+        }}
+        title="Renomear espaço"
+        type="button"
+      >
+        <Pencil size={15} />
+      </button>
 
       {/* Botão de Convidar / Compartilhar */}
       <button
         className="action-icon-button"
-        onClick={() => setIsInviteOpen(true)}
+        onClick={() => {
+          setModalTab("invite");
+          setIsModalOpen(true);
+        }}
         title="Convidar membro ou criar espaço conjunto"
         type="button"
       >
@@ -70,11 +83,14 @@ export const WorkspaceSelector: React.FC = () => {
         </button>
       </div>
 
-      {/* Modal de Convite */}
-      <InviteModal isOpen={isInviteOpen} onClose={() => setIsInviteOpen(false)} />
+      {/* Modal de Gerenciamento / Convite */}
+      <InviteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialTab={modalTab}
+      />
     </div>
   );
 };
 
 export default WorkspaceSelector;
-
