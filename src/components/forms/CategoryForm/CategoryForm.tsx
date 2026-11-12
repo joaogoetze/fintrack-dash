@@ -5,6 +5,7 @@ import type { Category } from "../../../types";
 import { createCategory, updateCategory } from "../../../api/categories";
 import { createCategorySchema, updateCategorySchema } from "../../../types";
 import { toastApiError } from "../../../utils/toast";
+import CurrencyInput from "../../ui/CurrencyInput/CurrencyInput";
 
 import "./CategoryForm.css";
 
@@ -18,6 +19,10 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
   const isEdit = Boolean(initial);
 
   const [name, setName] = useState(initial?.name || "");
+  const [estimatedAmount, setEstimatedAmount] = useState(initial?.estimatedAmount ?? 0);
+  const [marginPercent, setMarginPercent] = useState(
+    initial?.marginPercent != null ? String(initial.marginPercent) : "0"
+  );
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -34,7 +39,12 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
     e.preventDefault();
     setFieldErrors({});
 
-    const formData = { name: name.trim() };
+    const parsedMargin = marginPercent.trim() === "" ? 0 : Number(marginPercent.replace(",", "."));
+    const formData = {
+      name: name.trim(),
+      estimatedAmount: estimatedAmount > 0 ? estimatedAmount : null,
+      marginPercent: estimatedAmount > 0 ? parsedMargin : 0,
+    };
 
     const schema = isEdit ? updateCategorySchema : createCategorySchema;
     const result = schema.safeParse(formData);
@@ -85,6 +95,45 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
           autoFocus
         />
         {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="category-estimated">Estimativa mensal</label>
+        <CurrencyInput
+          id="category-estimated"
+          value={estimatedAmount}
+          onChange={(value) => {
+            setEstimatedAmount(value);
+            clearFieldError("estimatedAmount");
+          }}
+          aria-invalid={!!fieldErrors.estimatedAmount}
+        />
+        <span className="field-hint">
+          Reserva do mês para previsibilidade. Não é uma despesa e não altera carteiras.
+        </span>
+        {fieldErrors.estimatedAmount && (
+          <span className="field-error">{fieldErrors.estimatedAmount}</span>
+        )}
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="category-margin">Margem (%)</label>
+        <input
+          id="category-margin"
+          type="number"
+          min={0}
+          max={100}
+          step={0.01}
+          value={marginPercent}
+          onChange={(e) => {
+            setMarginPercent(e.target.value);
+            clearFieldError("marginPercent");
+          }}
+          aria-invalid={!!fieldErrors.marginPercent}
+        />
+        {fieldErrors.marginPercent && (
+          <span className="field-error">{fieldErrors.marginPercent}</span>
+        )}
       </div>
 
       <div className="form-actions">

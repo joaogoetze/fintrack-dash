@@ -5,8 +5,9 @@ import type { Summary, DueTransaction } from "../types";
 import { getSummary, getDueTransactions } from "../api/dashboard";
 import DueTransactionItem from "../components/items/DueTransactionItem/DueTransactionItem";
 import InfoCard from "../components/ui/InfoCard/InfoCard";
-import { useMonthStore } from "../stores/monthStore";
 import { useAuthStore } from "../stores/authStore";
+import { useMonthStore } from "../stores/monthStore";
+import { formatCurrency } from "../utils/formatters";
 import { toastApiError } from "../utils/toast";
 
 function Dashboard() {
@@ -55,11 +56,13 @@ function Dashboard() {
                     />
                     <InfoCard
                         label="Despesas previstas"
-                        value={summary.totalExpenses}
+                        value={summary.totalExpenses + (summary.categoryEstimateRemaining || 0)}
                         paidValue={summary.paidExpenses}
                         paidLabel="Pago"
                         unpaidValue={summary.unpaidExpenses}
                         unpaidLabel="A pagar"
+                        estimateValue={summary.categoryEstimates.length > 0 ? summary.categoryEstimateRemaining : undefined}
+                        estimateLabel="Estimado restante"
                         type="expense"
                     />
                     <InfoCard
@@ -72,6 +75,38 @@ function Dashboard() {
                 </div>
             ) : (
                 "Sem visão geral"
+            )}
+
+            {summary && summary.categoryEstimates.length > 0 && (
+                <div className="dashboard-reserves">
+                    <h2 className="dashboard-section-title">Reservas do mês</h2>
+                    {summary.categoryEstimates.map((item) => {
+                        const overspent = item.spent > item.cap && item.cap > 0;
+                        const progressPercent = item.cap > 0
+                            ? Math.min(100, Math.round((item.spent / item.cap) * 100))
+                            : 0;
+                        return (
+                            <div key={item.categoryId} className="reserve-card">
+                                <div className="reserve-card-header">
+                                    <span className="reserve-card-name">{item.name}</span>
+                                    <span className={overspent ? "reserve-card-over" : "reserve-card-remaining"}>
+                                        {formatCurrency(item.remaining)} restante
+                                    </span>
+                                </div>
+                                <div className="category-estimate-bar">
+                                    <div
+                                        className={`category-estimate-fill ${overspent ? "over" : ""}`}
+                                        style={{ width: `${progressPercent}%` }}
+                                    />
+                                </div>
+                                <div className="reserve-card-meta">
+                                    {formatCurrency(item.spent)} de {formatCurrency(item.cap)}
+                                    {item.marginPercent > 0 ? ` (margem ${item.marginPercent}%)` : ""}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             )}
 
             <div className="dashboard-dues">

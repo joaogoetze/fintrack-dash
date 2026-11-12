@@ -108,6 +108,11 @@
   opacity: 0.8;
 }
 
+.indicator-estimate {
+  background-color: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+}
+
 .subitem-label {
   color: var(--text-secondary);
 }

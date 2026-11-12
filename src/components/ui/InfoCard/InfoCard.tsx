@@ -7,6 +7,8 @@ interface InfoCardProps {
   paidLabel?: string;
   unpaidValue?: number;
   unpaidLabel?: string;
+  estimateValue?: number;
+  estimateLabel?: string;
   secondaryLabel?: string;
   secondaryValue?: number;
   type?: "income" | "expense" | "balance";
@@ -19,6 +21,8 @@ export default function InfoCard({
   paidLabel,
   unpaidValue,
   unpaidLabel,
+  estimateValue,
+  estimateLabel,
   secondaryLabel,
   secondaryValue,
   type = "balance",
@@ -62,6 +66,13 @@ export default function InfoCard({
               <span className="subitem-label">{unpaidLabel || "Pendente"}:</span>
               <span className="subitem-value">{formatCurrency(unpaidValue || 0)}</span>
             </div>
+            {estimateValue !== undefined && (
+              <div className="info-card-subitem">
+                <span className="subitem-indicator indicator-estimate" />
+                <span className="subitem-label">{estimateLabel || "Estimado restante"}:</span>
+                <span className="subitem-value">{formatCurrency(estimateValue)}</span>
+              </div>
+            )}
           </div>
         </div>
       )}
