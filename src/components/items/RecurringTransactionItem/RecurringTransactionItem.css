@@ -1,3 +1,27 @@
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.item-delete-btn,
+.item-edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.item-delete-btn:hover {
+  color: var(--error-color);
+}
+.item-edit-btn:hover {
+  color: var(--brand-primary);
+}
+
 .recurring-item-card {
   display: flex;
   align-items: center;

@@ -2,10 +2,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { useAuthStore } from "../stores/authStore";
+import { getApiBase } from "../utils/environment";
 import { SessionExpiredError } from "../utils/errors";
-
-const API_BASE = "https://api-fintrack.joaogoetze.com.br";
-//const API_BASE = "http://localhost:3001";
 
 async function request(
     path: string,
@@ -26,7 +24,7 @@ async function request(
         headers["x-workspace-id"] = String(activeWorkspaceId);
     }
 
-    const response = await fetch(`${API_BASE}${path}`, {
+    const response = await fetch(`${getApiBase()}${path}`, {
         ...options,
         headers,
     });

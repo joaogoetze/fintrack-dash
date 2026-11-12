@@ -26,13 +26,7 @@ export const createExpenseSchema = expenseSchema
     paid: true,
   });
 
-export const createExpenseOptionsSchema = z.object({
-  isRecurring: z.boolean(),
-});
-
-export const createExpenseRequest = createExpenseSchema.merge(createExpenseOptionsSchema);
-
-export type CreateExpenseInput = z.infer<typeof createExpenseRequest>;
+export type CreateExpenseInput = z.infer<typeof createExpenseSchema>;
 
 export const updateExpenseSchema = expenseSchema
   .omit({ deletedAt: true, walletName: true, categoryName: true })
@@ -45,9 +39,6 @@ export const updateExpenseSchema = expenseSchema
     categoryId: true,
     recurringTransactionId: true,
     paid: true,
-  })
-  .extend({
-    updateRecurringTransaction: z.boolean().optional(),
   });
 
 export type UpdateExpenseInput = z.infer<typeof updateExpenseSchema>;

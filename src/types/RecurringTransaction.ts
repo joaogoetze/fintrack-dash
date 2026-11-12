@@ -13,13 +13,21 @@ const recurringTransactionSchema = z.object({
   deletedAt: z.coerce.date().nullable().optional(),
 });
 
-export const createRecurringTransactionSchema = recurringTransactionSchema.omit({ id: true, deletedAt: true });
+export const createRecurringTransactionSchema = recurringTransactionSchema
+  .omit({ id: true, deletedAt: true, categoryName: true, workspaceId: true })
+  .extend({
+    startDate: z.string().date("Data de início inválida"),
+    dueDate: z.string().date("Data de vencimento inválida").nullable().optional(),
+  });
 
 export type CreateRecurringTransactionInput = z.infer<typeof createRecurringTransactionSchema>;
 
 export const updateRecurringTransactionSchema = recurringTransactionSchema
-  .omit({ id: true, type: true, startDate: true, deletedAt: true })
-  .partial();
+  .omit({ id: true, type: true, deletedAt: true, categoryName: true, workspaceId: true })
+  .extend({
+    startDate: z.string().date("Data de início inválida").optional(),
+    dueDate: z.string().date("Data de vencimento inválida").nullable().optional(),
+  });
 
 export type UpdateRecurringTransactionInput = z.infer<typeof updateRecurringTransactionSchema>;
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { 
   incomeSchema, 
-  createIncomeRequest, 
+  createIncomeSchema, 
   updateIncomeSchema,
   updateIncomePaidStatusSchema,
   type Income,
@@ -26,7 +26,7 @@ export function getIncomes(activeMonth: string): Promise<IncomesResponse> {
 }
 
 export function createIncome(data: CreateIncomeInput): Promise<Income> {
-    return api.post("/incomes", data, createIncomeRequest, incomeSchema);
+    return api.post("/incomes", data, createIncomeSchema, incomeSchema);
 }
 
 export function updateIncomePaid(id: number, paid: boolean, walletId?: number, amount?: number, date?: string | null): Promise<Income> {

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { 
   expenseSchema, 
-  createExpenseRequest, 
+  createExpenseSchema, 
   updateExpenseSchema,
   updateExpensePaidStatusSchema,
   type Expense,
@@ -26,7 +26,7 @@ export function getExpenses(activeMonth: string): Promise<ExpensesResponse> {
 }
 
 export function createExpense(data: CreateExpenseInput): Promise<Expense> {
-    return api.post("/expenses", data, createExpenseRequest, expenseSchema);
+    return api.post("/expenses", data, createExpenseSchema, expenseSchema);
 }
 
 export function updateExpensePaid(id: number, paid: boolean, walletId?: number, amount?: number, date?: string | null): Promise<Expense> {

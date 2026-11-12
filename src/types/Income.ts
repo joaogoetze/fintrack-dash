@@ -23,13 +23,7 @@ export const createIncomeSchema = incomeSchema
     paid: true,
   });
 
-export const createIncomeOptionsSchema = z.object({
-  isRecurring: z.boolean().optional(),
-});
-
-export const createIncomeRequest = createIncomeSchema.merge(createIncomeOptionsSchema);
-
-export type CreateIncomeInput = z.infer<typeof createIncomeRequest>;
+export type CreateIncomeInput = z.infer<typeof createIncomeSchema>;
 
 export const updateIncomeSchema = incomeSchema
   .omit({ deletedAt: true, walletName: true })
@@ -41,9 +35,6 @@ export const updateIncomeSchema = incomeSchema
     walletId: true,
     recurringTransactionId: true,
     paid: true,
-  })
-  .extend({
-    updateRecurringTransaction: z.boolean().optional(),
   });
 
 export type UpdateIncomeInput = z.infer<typeof updateIncomeSchema>;
