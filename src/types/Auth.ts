@@ -10,7 +10,14 @@ export interface Workspace {
   id: number;
   name: string;
   ownerId: number;
-  role?: 'owner' | 'admin' | 'member';
+  role?: 'owner' | 'member';
+}
+
+export interface WorkspaceMember {
+  userId: number;
+  name: string;
+  email: string;
+  role: 'owner' | 'member';
 }
 
 

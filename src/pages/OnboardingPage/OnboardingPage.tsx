@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { authApi } from "../../api/auth";
 import { useAuthStore } from "../../stores/authStore";
+import { useInviteStore } from "../../stores/inviteStore";
 import type { WorkspaceInvite } from "../../types/Auth";
-import { Sparkles, ArrowRight, Check, Users, LogOut } from "lucide-react";
+import { ArrowRight, Check, Users, LogOut } from "lucide-react";
 import "./OnboardingPage.css";
 
 export const OnboardingPage: React.FC = () => {
   const { user, setWorkspaces, setActiveWorkspaceId, logout } = useAuthStore();
+  const invites = useInviteStore((state) => state.invites);
+  const removeInvite = useInviteStore((state) => state.removeInvite);
   const [workspaceName, setWorkspaceName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [invites, setInvites] = useState<WorkspaceInvite[]>([]);
-
-  useEffect(() => {
-    const fetchInvites = async () => {
-      try {
-        const data = await authApi.getMyInvites();
-        setInvites(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchInvites();
-  }, []);
 
   const handleCreateWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +41,7 @@ export const OnboardingPage: React.FC = () => {
       setWorkspaces(res.workspaces);
       setActiveWorkspaceId(invite.workspaceId);
       toast.success(`Você agora faz parte do espaço "${invite.workspaceName}"!`);
+      removeInvite(invite.id);
     } catch (error: any) {
       toast.error(error.message || "Erro ao aceitar convite");
     } finally {
@@ -78,43 +69,16 @@ export const OnboardingPage: React.FC = () => {
         </div>
 
         <div className="onboarding-header">
-          <div className="onboarding-icon-badge">
-            <Sparkles size={28} />
+          <div className="onboarding-logo-badge">
+            <img src="/favicon.svg" alt="" className="onboarding-logo-img" />
           </div>
           <h1>Bem-vindo ao FinTrack!</h1>
           <p className="onboarding-subtitle">
-            Para começar, dê um nome ao seu primeiro espaço financeiro.
+            Para começar, crie seu primeiro espaço financeiro.
           </p>
         </div>
 
-        {invites.length > 0 && (
-          <div className="onboarding-invites-section">
-            <span className="onboarding-invites-title">
-              Você foi convidado para um espaço:
-            </span>
-            {invites.map((invite) => (
-              <div key={invite.id} className="onboarding-invite-card">
-                <div className="onboarding-invite-icon">
-                  <Users size={18} />
-                </div>
-                <div className="onboarding-invite-details">
-                  <strong>{invite.workspaceName}</strong>
-                  <p>Criado por {invite.inviterName}</p>
-                </div>
-                <button
-                  className="onboarding-accept-btn"
-                  onClick={() => handleAcceptInvite(invite)}
-                  disabled={loading}
-                >
-                  <Check size={14} /> Entrar
-                </button>
-              </div>
-            ))}
-            <div className="onboarding-divider">
-              <span>ou crie um novo espaço abaixo</span>
-            </div>
-          </div>
-        )}
+        
 
         <form onSubmit={handleCreateWorkspace} className="onboarding-form">
           <div className="form-group">
@@ -136,6 +100,39 @@ export const OnboardingPage: React.FC = () => {
             <ArrowRight size={16} />
           </button>
         </form>
+
+        {invites.length > 0 && (
+          <>
+          <div className="onboarding-divider">
+          <span>ou acesse espaços a que você já foi convidado</span>
+        </div>
+          <div className="onboarding-invites-section">
+            {/* <span className="onboarding-invites-title">
+              Você foi convidado para um espaço:
+            </span> */}
+            {invites.map((invite) => (
+              <div key={invite.id} className="onboarding-invite-card">
+                <div className="onboarding-invite-icon">
+                  <Users size={18} />
+                </div>
+                <div className="onboarding-invite-details">
+                  <strong>{invite.workspaceName}</strong>
+                  <p>Criado por {invite.inviterName}</p>
+                </div>
+                <button
+                  className="onboarding-accept-btn"
+                  onClick={() => handleAcceptInvite(invite)}
+                  disabled={loading}
+                >
+                  <Check size={14} /> Entrar
+                </button>
+              </div>
+            ))}
+            
+          </div>
+          </>
+          
+        )}
       </div>
     </div>
   );

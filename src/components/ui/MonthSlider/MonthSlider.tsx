@@ -5,7 +5,11 @@ import { generateMonths, getShortMonthName, keyToDate } from "../../../utils/mon
 
 import "./MonthSlider.css";
 
-function MonthSlider() {
+interface MonthSliderProps {
+  inactive?: boolean;
+}
+
+function MonthSlider({ inactive = false }: MonthSliderProps) {
   const activeMonth = useMonthStore((state) => state.activeMonth);
   const setActiveMonth = useMonthStore((state) => state.setActiveMonth);
   const sliderRef = useRef<HTMLDivElement | null>(null);
@@ -24,7 +28,7 @@ function MonthSlider() {
   }, [activeMonth]);
 
   return (
-    <div className="month-slider">
+    <div className={`month-slider${inactive ? " is-inactive" : ""}`}>
       <div className="month-slider-track" ref={sliderRef}>
         {months.map((month) => {
           const isActive = month === activeMonth;

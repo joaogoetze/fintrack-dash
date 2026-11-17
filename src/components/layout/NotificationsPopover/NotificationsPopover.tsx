@@ -2,32 +2,18 @@ import React, { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import { authApi } from "../../../api/auth";
 import { useAuthStore } from "../../../stores/authStore";
+import { useInviteStore } from "../../../stores/inviteStore";
 import type { WorkspaceInvite } from "../../../types/Auth";
 import { Bell, Check, X, Users } from "lucide-react";
 import "./NotificationsPopover.css";
 
 export const NotificationsPopover: React.FC = () => {
   const { setWorkspaces, setActiveWorkspaceId } = useAuthStore();
+  const invites = useInviteStore((state) => state.invites);
+  const removeInvite = useInviteStore((state) => state.removeInvite);
   const [isOpen, setIsOpen] = useState(false);
-  const [invites, setInvites] = useState<WorkspaceInvite[]>([]);
   const [loading, setLoading] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
-
-  const fetchInvites = async () => {
-    try {
-      const data = await authApi.getMyInvites();
-      setInvites(data);
-    } catch (error) {
-      console.error("Erro ao buscar convites:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchInvites();
-    // Atualiza a cada 90 segundos
-    const interval = setInterval(fetchInvites, 90000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Fecha o popover ao clicar fora
   useEffect(() => {
@@ -49,7 +35,7 @@ export const NotificationsPopover: React.FC = () => {
       setWorkspaces(res.workspaces);
       setActiveWorkspaceId(invite.workspaceId);
       toast.success(`Você agora faz parte do espaço "${invite.workspaceName}"!`);
-      setInvites((prev) => prev.filter((i) => i.id !== invite.id));
+      removeInvite(invite.id);
     } catch (error: any) {
       toast.error(error.message || "Erro ao aceitar convite");
     } finally {
@@ -62,7 +48,7 @@ export const NotificationsPopover: React.FC = () => {
       setLoading(true);
       await authApi.rejectInvite(invite.id);
       toast.info("Convite recusado.");
-      setInvites((prev) => prev.filter((i) => i.id !== invite.id));
+      removeInvite(invite.id);
     } catch (error: any) {
       toast.error(error.message || "Erro ao recusar convite");
     } finally {

@@ -136,6 +136,30 @@
   transition: border-color 0.2s ease;
 }
 
+.modal-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.modal-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.modal-select-chevron {
+  position: absolute;
+  right: 14px;
+  color: var(--text-secondary);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
 .modal-select:focus,
 .modal-input:focus {
   border-color: var(--brand-secondary);
@@ -193,4 +217,113 @@
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.rename-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.rename-row .form-group {
+  flex: 1;
+}
+
+.rename-save-btn {
+  height: 40px;
+  white-space: nowrap;
+}
+
+.members-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.members-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.add-member-btn,
+.remove-member-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-member-btn:hover {
+  color: var(--brand-secondary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.remove-member-btn:hover:not(:disabled) {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.remove-member-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.invite-inline {
+  display: flex;
+  gap: 8px;
+}
+
+.invite-inline .modal-input {
+  flex: 1;
+}
+
+.members-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.member-info strong {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.member-info span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -2,8 +2,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { useAuthStore } from "../stores/authStore";
+import type { Workspace } from "../types/Auth";
 import { getApiBase } from "../utils/environment";
 import { SessionExpiredError } from "../utils/errors";
+
+let syncingWorkspacesAfterForbidden = false;
 
 async function request(
     path: string,
@@ -38,6 +41,22 @@ async function request(
             toast.error("Sessão expirada. Faça login novamente.");
         }
         throw new SessionExpiredError();
+    }
+
+    if (response.status === 403 && token && path !== "/auth/me") {
+        if (!syncingWorkspacesAfterForbidden) {
+            syncingWorkspacesAfterForbidden = true;
+            try {
+                const me = await request("/auth/me") as { workspaces?: Workspace[] };
+                const workspaces = Array.isArray(me?.workspaces) ? me.workspaces : [];
+                useAuthStore.getState().syncWorkspaces(workspaces);
+                toast.error("Você não tem mais acesso a este espaço.");
+            } catch {
+                // getMe falhou; segue o erro original
+            } finally {
+                syncingWorkspacesAfterForbidden = false;
+            }
+        }
     }
 
     if (!response.ok) {

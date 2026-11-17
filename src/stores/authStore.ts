@@ -8,6 +8,7 @@ interface AuthState {
   activeWorkspaceId: number | null;
   setAuth: (token: string, user: User, workspaces: Workspace[]) => void;
   setWorkspaces: (workspaces: Workspace[]) => void;
+  syncWorkspaces: (workspaces: Workspace[]) => void;
   updateWorkspaceInStore: (workspace: Workspace) => void;
   setActiveWorkspaceId: (workspaceId: number) => void;
   logout: () => void;
@@ -59,6 +60,23 @@ export const useAuthStore = create<AuthState>((set) => {
     setWorkspaces: (workspaces) => {
       localStorage.setItem(STORAGE_KEY_WORKSPACES, JSON.stringify(workspaces));
       set({ workspaces });
+    },
+
+    syncWorkspaces: (workspaces) => {
+      localStorage.setItem(STORAGE_KEY_WORKSPACES, JSON.stringify(workspaces));
+      set((state) => {
+        const stillActive = workspaces.some((ws) => ws.id === state.activeWorkspaceId);
+        if (workspaces.length === 0) {
+          localStorage.removeItem(STORAGE_KEY_ACTIVE_WS);
+          return { workspaces, activeWorkspaceId: null };
+        }
+        if (!stillActive) {
+          const nextId = workspaces[0].id;
+          localStorage.setItem(STORAGE_KEY_ACTIVE_WS, String(nextId));
+          return { workspaces, activeWorkspaceId: nextId };
+        }
+        return { workspaces };
+      });
     },
 
     updateWorkspaceInStore: (updatedWs) => {

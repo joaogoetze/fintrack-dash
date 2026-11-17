@@ -1,5 +1,5 @@
 import { api } from "./client";
-import type { User, Workspace, WorkspaceInvite } from "../types/Auth";
+import type { User, Workspace, WorkspaceInvite, WorkspaceMember } from "../types/Auth";
 
 interface LoginResponse {
   token: string;
@@ -22,6 +22,14 @@ export const authApi = {
 
   updateWorkspace(workspaceId: number, name: string) {
     return api.put<Workspace>(`/auth/workspaces/${workspaceId}`, { name });
+  },
+
+  getWorkspaceMembers(workspaceId: number) {
+    return api.get<WorkspaceMember[]>(`/auth/workspaces/${workspaceId}/members`);
+  },
+
+  removeWorkspaceMember(workspaceId: number, userId: number) {
+    return api.delete<{ success: boolean }>(`/auth/workspaces/${workspaceId}/members/${userId}`);
   },
 
   inviteUser(workspaceId: number, email: string) {
