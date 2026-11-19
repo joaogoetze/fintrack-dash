@@ -62,7 +62,7 @@ function Dashboard() {
                         unpaidValue={summary.unpaidExpenses}
                         unpaidLabel="A pagar"
                         estimateValue={summary.categoryEstimates.length > 0 ? summary.categoryEstimateRemaining : undefined}
-                        estimateLabel="Estimado restante"
+                        estimateLabel="Estimativas restantes"
                         type="expense"
                     />
                     <InfoCard
@@ -77,51 +77,57 @@ function Dashboard() {
                 "Sem visão geral"
             )}
 
-            {summary && summary.categoryEstimates.length > 0 && (
-                <div className="dashboard-reserves">
-                    <h2 className="dashboard-section-title">Reservas do mês</h2>
-                    {summary.categoryEstimates.map((item) => {
-                        const overspent = item.spent > item.cap && item.cap > 0;
-                        const progressPercent = item.cap > 0
-                            ? Math.min(100, Math.round((item.spent / item.cap) * 100))
-                            : 0;
-                        return (
-                            <div key={item.categoryId} className="reserve-card">
-                                <div className="reserve-card-header">
-                                    <span className="reserve-card-name">{item.name}</span>
-                                    <span className={overspent ? "reserve-card-over" : "reserve-card-remaining"}>
-                                        {formatCurrency(item.remaining)} restante
-                                    </span>
-                                </div>
-                                <div className="category-estimate-bar">
-                                    <div
-                                        className={`category-estimate-fill ${overspent ? "over" : ""}`}
-                                        style={{ width: `${progressPercent}%` }}
-                                    />
-                                </div>
-                                <div className="reserve-card-meta">
-                                    {formatCurrency(item.spent)} de {formatCurrency(item.cap)}
-                                    {item.marginPercent > 0 ? ` (margem ${item.marginPercent}%)` : ""}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
-
-            <div className="dashboard-dues">
-                <h2 className="dashboard-section-title">Vencimentos do mês</h2>
-                {dueTransactions.length > 0 ? (
-                    dueTransactions.map(transaction =>
-                        <DueTransactionItem
-                            key={`${transaction.type}-${transaction.id}`}
-                            transaction={transaction}
-                            onUpdate={loadDueTransactions}
-                        />
-                    )
-                ) : (
-                    <div className="empty-state">Nenhum vencimento neste mês</div>
+            <div className="dashboard-lists">
+                {summary && summary.categoryEstimates.length > 0 && (
+                    <section className="dashboard-reserves">
+                        <h2 className="dashboard-section-title">Estimativas do mês</h2>
+                        <div className="dashboard-list-scroll">
+                            {summary.categoryEstimates.map((item) => {
+                                const overspent = item.spent > item.cap && item.cap > 0;
+                                const progressPercent = item.cap > 0
+                                    ? Math.min(100, Math.round((item.spent / item.cap) * 100))
+                                    : 0;
+                                return (
+                                    <div key={item.categoryId} className="reserve-card">
+                                        <div className="reserve-card-header">
+                                            <span className="reserve-card-name">{item.name}</span>
+                                            <span className={overspent ? "reserve-card-over" : "reserve-card-remaining"}>
+                                                {formatCurrency(item.remaining)} restante da estimativa
+                                            </span>
+                                        </div>
+                                        <div className="category-estimate-bar">
+                                            <div
+                                                className={`category-estimate-fill ${overspent ? "over" : ""}`}
+                                                style={{ width: `${progressPercent}%` }}
+                                            />
+                                        </div>
+                                        <div className="reserve-card-meta">
+                                            {formatCurrency(item.spent)} de {formatCurrency(item.cap)}
+                                            {item.marginPercent > 0 ? ` (margem ${item.marginPercent}%)` : ""}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
                 )}
+
+                <section className="dashboard-dues">
+                    <h2 className="dashboard-section-title">Vencimentos do mês</h2>
+                    <div className="dashboard-list-scroll">
+                        {dueTransactions.length > 0 ? (
+                            dueTransactions.map(transaction =>
+                                <DueTransactionItem
+                                    key={`${transaction.type}-${transaction.id}`}
+                                    transaction={transaction}
+                                    onUpdate={loadDueTransactions}
+                                />
+                            )
+                        ) : (
+                            <div className="empty-state">Nenhum vencimento neste mês</div>
+                        )}
+                    </div>
+                </section>
             </div>
         </div>
     );

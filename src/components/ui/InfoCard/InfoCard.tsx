@@ -69,7 +69,7 @@ export default function InfoCard({
             {estimateValue !== undefined && (
               <div className="info-card-subitem">
                 <span className="subitem-indicator indicator-estimate" />
-                <span className="subitem-label">{estimateLabel || "Estimado restante"}:</span>
+                <span className="subitem-label">{estimateLabel || "Estimativas restantes"}:</span>
                 <span className="subitem-value">{formatCurrency(estimateValue)}</span>
               </div>
             )}

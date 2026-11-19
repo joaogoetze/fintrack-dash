@@ -109,7 +109,7 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
           aria-invalid={!!fieldErrors.estimatedAmount}
         />
         <span className="field-hint">
-          Reserva do mês para previsibilidade. Não é uma despesa e não altera carteiras.
+          Valor previsto no mês para esta categoria. Não lança despesa e não altera carteiras.
         </span>
         {fieldErrors.estimatedAmount && (
           <span className="field-error">{fieldErrors.estimatedAmount}</span>

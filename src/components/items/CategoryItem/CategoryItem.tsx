@@ -55,7 +55,7 @@ function CategoryItem({ category, estimate, onUpdate, onEdit }: CategoryItemProp
           {hasEstimate && (
             <div className="category-estimate">
               <div className="category-estimate-meta">
-                <span>Teto {formatCurrency(cap)}</span>
+                <span>Estimativa {formatCurrency(cap)}</span>
                 <span className={overspent ? "category-estimate-over" : ""}>
                   {formatCurrency(spent)} de {formatCurrency(cap)}
                 </span>
