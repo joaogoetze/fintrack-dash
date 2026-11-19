@@ -100,9 +100,7 @@ body {
 }
 
 .dashboard-list-scroll {
-  max-height: min(70vh, 720px);
-  overflow-y: auto;
-  padding-right: 4px;
+  min-width: 0;
 }
 
 .dashboard-list-scroll .empty-state {
