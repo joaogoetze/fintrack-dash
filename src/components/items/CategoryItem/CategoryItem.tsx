@@ -32,9 +32,7 @@ function CategoryItem({ category, estimate, onUpdate, onEdit }: CategoryItemProp
 
   const hasEstimate = Boolean(category.estimatedAmount && category.estimatedAmount > 0);
   const cap = estimate?.cap
-    ?? (hasEstimate
-      ? Number(category.estimatedAmount) * (1 + Number(category.marginPercent || 0) / 100)
-      : 0);
+    ?? (hasEstimate ? Number(category.estimatedAmount) : 0);
   const spent = estimate?.spent ?? 0;
   const remaining = estimate?.remaining ?? Math.max(0, cap - spent);
   const overspent = spent > cap && cap > 0;

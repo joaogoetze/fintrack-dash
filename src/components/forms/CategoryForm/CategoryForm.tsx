@@ -20,9 +20,6 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
 
   const [name, setName] = useState(initial?.name || "");
   const [estimatedAmount, setEstimatedAmount] = useState(initial?.estimatedAmount ?? 0);
-  const [marginPercent, setMarginPercent] = useState(
-    initial?.marginPercent != null ? String(initial.marginPercent) : "0"
-  );
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -39,11 +36,9 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
     e.preventDefault();
     setFieldErrors({});
 
-    const parsedMargin = marginPercent.trim() === "" ? 0 : Number(marginPercent.replace(",", "."));
     const formData = {
       name: name.trim(),
       estimatedAmount: estimatedAmount > 0 ? estimatedAmount : null,
-      marginPercent: estimatedAmount > 0 ? parsedMargin : 0,
     };
 
     const schema = isEdit ? updateCategorySchema : createCategorySchema;
@@ -113,26 +108,6 @@ function CategoryForm({ initial, onClose, onSaved }: CategoryFormProps) {
         </span>
         {fieldErrors.estimatedAmount && (
           <span className="field-error">{fieldErrors.estimatedAmount}</span>
-        )}
-      </div>
-
-      <div className="form-field">
-        <label htmlFor="category-margin">Margem (%)</label>
-        <input
-          id="category-margin"
-          type="number"
-          min={0}
-          max={100}
-          step={0.01}
-          value={marginPercent}
-          onChange={(e) => {
-            setMarginPercent(e.target.value);
-            clearFieldError("marginPercent");
-          }}
-          aria-invalid={!!fieldErrors.marginPercent}
-        />
-        {fieldErrors.marginPercent && (
-          <span className="field-error">{fieldErrors.marginPercent}</span>
         )}
       </div>
 

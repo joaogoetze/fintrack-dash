@@ -14,7 +14,7 @@
 
 .transfer-swap-btn {
   background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--divider);
   color: var(--text-secondary);
   padding: 10px;
   border-radius: var(--radius-sm);
@@ -29,7 +29,7 @@
 .transfer-swap-btn:hover {
   color: var(--brand-secondary);
   border-color: var(--brand-secondary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover-fill);
 }
 
 @media (max-width: 600px) {

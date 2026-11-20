@@ -1,7 +1,7 @@
 .form-field .currency-input,
 .currency-input {
   background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--divider);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
   color: var(--text-primary);

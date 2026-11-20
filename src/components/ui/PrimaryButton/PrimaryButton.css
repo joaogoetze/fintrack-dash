@@ -1,6 +1,6 @@
 .primary-button {
   background: var(--brand-primary);
-  color: white;
+  color: var(--on-brand);
   border: none;
   padding: 10px 20px;
   border-radius: var(--radius-sm);

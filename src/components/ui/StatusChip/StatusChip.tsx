@@ -21,7 +21,6 @@ const statusModifiers: Record<DueStatus, string> = {
 };
 
 function StatusChip({ status, paid, type, onClick, disabled }: StatusChipProps) {
-  console.log("status", status);
   const label = status === "due-paid"
     ? type === "income" ? "Recebido" : "Pago"
     : status === "due-today"

@@ -3,8 +3,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top right, rgba(4, 120, 87, 0.15), transparent 40%),
-              radial-gradient(circle at bottom left, rgba(5, 150, 105, 0.1), transparent 50%),
+  background: radial-gradient(circle at top right, color-mix(in srgb, var(--brand-primary) 18%, transparent), transparent 40%),
+              radial-gradient(circle at bottom left, color-mix(in srgb, var(--brand-secondary) 12%, transparent), transparent 50%),
               var(--bg-primary);
   padding: 24px;
 }
@@ -30,7 +30,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--divider);
 }
 
 .onboarding-user-info {
@@ -51,7 +51,7 @@
 
 .onboarding-avatar-placeholder {
   background: var(--brand-primary);
-  color: white;
+  color: var(--on-brand);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,8 +87,8 @@
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-input);
+  border: 1px solid var(--divider);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,7 +125,7 @@
 .onboarding-invites-title {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #38bdf8;
+  color: var(--brand-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -134,14 +134,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
   padding: 10px 14px;
   border-radius: var(--radius-md);
 }
 
 .onboarding-invite-icon {
-  color: #38bdf8;
+  color: var(--brand-secondary);
 }
 
 .onboarding-invite-details {
@@ -162,7 +162,7 @@
 .onboarding-accept-btn {
   background: var(--brand-primary);
   border: none;
-  color: white;
+  color: var(--on-brand);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
@@ -189,7 +189,7 @@
 .onboarding-divider::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--divider);
 }
 
 .onboarding-divider span {
@@ -205,8 +205,8 @@
 }
 
 .onboarding-input {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg-input);
+  border: 1px solid var(--divider);
   color: var(--text-primary);
   padding: 12px 14px;
   border-radius: var(--radius-md);
@@ -223,7 +223,7 @@
 .onboarding-submit-btn {
   background: var(--brand-primary);
   border: none;
-  color: white;
+  color: var(--on-brand);
   padding: 12px;
   border-radius: var(--radius-md);
   font-size: 0.92rem;

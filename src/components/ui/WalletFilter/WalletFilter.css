@@ -5,7 +5,7 @@
 .wallet-filter select {
   width: 100%;
   background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--divider);
   border-radius: var(--radius-sm);
   padding: 10px 36px 10px 12px;
   color: var(--text-primary);

@@ -24,7 +24,7 @@
 .form-field input[type="number"],
 .form-field input[type="date"] {
   background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--divider);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
   color: var(--text-primary);
@@ -35,7 +35,7 @@
 
 .form-field select {
   background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--divider);
   border-radius: var(--radius-sm);
   padding: 10px 36px 10px 12px;
   color: var(--text-primary);

@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.7);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 6px 12px;
   border-radius: var(--radius-md);
@@ -49,8 +49,8 @@
 }
 
 .workspace-select option {
-  background: #1e293b;
-  color: #f8fafc;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .select-arrow {
@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   padding-left: 8px;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid var(--divider);
 }
 
 .user-avatar-button {
@@ -90,7 +90,7 @@
   height: 28px;
   border-radius: 50%;
   background: var(--brand-primary);
-  color: white;
+  color: var(--on-brand);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,7 +103,7 @@
   top: calc(100% + 8px);
   right: 0;
   width: 240px;
-  background: #1e293b;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
@@ -116,7 +116,7 @@
   flex-direction: column;
   gap: 2px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--divider);
 }
 
 .user-menu-name {
@@ -149,12 +149,50 @@
 }
 
 .user-menu-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover-fill);
+}
+
+.user-menu-theme {
+  padding: 10px 16px;
+  border-top: 1px solid var(--divider);
+}
+
+.theme-segment {
+  display: flex;
+  width: 100%;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  gap: 2px;
+}
+
+.theme-segment-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border: none;
+  border-radius: calc(var(--radius-md) - 2px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.theme-segment-btn:hover {
+  color: var(--text-primary);
+}
+
+.theme-segment-btn.is-active {
+  background: var(--brand-primary);
+  color: var(--on-brand);
 }
 
 .user-menu-item-danger {
   color: var(--error-color);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--divider);
 }
 
 

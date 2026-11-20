@@ -1,27 +1,49 @@
-:root {
+:root,
+html[data-theme="dark"] {
   color-scheme: dark;
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: rgba(30, 41, 59, 0.7);
-  
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  
-  --brand-primary: #047857;
-  --brand-primary-hover: #064e3b;
-  --brand-secondary: #059669;
-  
-  --border-color: rgba(4, 120, 87, 0.3);
+  --bg-primary: #131c16;
+  --bg-secondary: #1c2920;
+  --bg-card: #1c2920;
+  --bg-input: #131c16;
+  --text-primary: #e4f1e6;
+  --text-secondary: #9bb8a3;
+  --brand-primary: #5fba72;
+  --brand-primary-hover: #4ea463;
+  --brand-secondary: #8fd4a3;
+  --on-brand: #131c16;
+  --border-color: #2d4534;
+  --hover-fill: rgba(228, 241, 230, 0.07);
+  --divider: #2d4534;
   --error-color: #ef4444;
   --warning-color: #eab308;
-  --success-color: #047857;
-  
+  --success-color: #5fba72;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
-  
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.24), 0 2px 4px -1px rgba(0, 0, 0, 0.14);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg-primary: #eef4ef;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #eef4ef;
+  --text-primary: #2f4a36;
+  --text-secondary: #5c7a64;
+  --brand-primary: #4e8b5a;
+  --brand-primary-hover: #3f7549;
+  --brand-secondary: #8fbe96;
+  --on-brand: #ffffff;
+  --border-color: #d4e5d6;
+  --hover-fill: rgba(47, 74, 54, 0.06);
+  --divider: #d4e5d6;
+  --error-color: #dc2626;
+  --warning-color: #ca8a04;
+  --success-color: #4e8b5a;
+  --shadow-sm: 0 1px 2px rgba(47, 74, 54, 0.08);
+  --shadow-md: 0 4px 12px -2px rgba(47, 74, 54, 0.12);
 }
 
 * {
@@ -88,7 +110,7 @@ body {
   align-items: start;
 }
 
-.dashboard-lists:not(:has(.dashboard-reserves)) {
+.dashboard-lists:has(> :only-child) {
   grid-template-columns: 1fr;
 }
 
@@ -151,7 +173,7 @@ body {
 .category-estimate-bar {
   height: 6px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--hover-fill);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -159,7 +181,7 @@ body {
 .category-estimate-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
 }
 
 .category-estimate-fill.over {
@@ -199,7 +221,7 @@ body {
 }
 
 .btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--hover-fill);
   color: var(--text-primary);
 }
 
@@ -208,7 +230,7 @@ body {
   border: none;
   border-radius: var(--radius-sm);
   padding: 8px 16px;
-  color: #fff;
+  color: var(--on-brand);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;

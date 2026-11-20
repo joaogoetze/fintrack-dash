@@ -37,12 +37,12 @@
 }
 
 .month-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover-fill);
   color: var(--text-primary);
 }
 
 .month-item.active {
   background: var(--brand-primary);
-  color: #fff;
+  color: var(--on-brand);
   font-weight: 500;
 }

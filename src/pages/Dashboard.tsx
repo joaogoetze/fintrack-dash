@@ -77,7 +77,23 @@ function Dashboard() {
                 "Sem visão geral"
             )}
 
+            {(dueTransactions.length > 0 || (summary && summary.categoryEstimates.length > 0)) && (
             <div className="dashboard-lists">
+                {dueTransactions.length > 0 && (
+                <section className="dashboard-dues">
+                    <h2 className="dashboard-section-title">Vencimentos do mês</h2>
+                    <div className="dashboard-list-scroll">
+                        {dueTransactions.map(transaction =>
+                            <DueTransactionItem
+                                key={`${transaction.type}-${transaction.id}`}
+                                transaction={transaction}
+                                onUpdate={loadDueTransactions}
+                            />
+                        )}
+                    </div>
+                </section>
+                )}
+
                 {summary && summary.categoryEstimates.length > 0 && (
                     <section className="dashboard-reserves">
                         <h2 className="dashboard-section-title">Estimativas do mês</h2>
@@ -103,7 +119,6 @@ function Dashboard() {
                                         </div>
                                         <div className="reserve-card-meta">
                                             {formatCurrency(item.spent)} de {formatCurrency(item.cap)}
-                                            {item.marginPercent > 0 ? ` (margem ${item.marginPercent}%)` : ""}
                                         </div>
                                     </div>
                                 );
@@ -111,24 +126,8 @@ function Dashboard() {
                         </div>
                     </section>
                 )}
-
-                <section className="dashboard-dues">
-                    <h2 className="dashboard-section-title">Vencimentos do mês</h2>
-                    <div className="dashboard-list-scroll">
-                        {dueTransactions.length > 0 ? (
-                            dueTransactions.map(transaction =>
-                                <DueTransactionItem
-                                    key={`${transaction.type}-${transaction.id}`}
-                                    transaction={transaction}
-                                    onUpdate={loadDueTransactions}
-                                />
-                            )
-                        ) : (
-                            <div className="empty-state">Nenhum vencimento neste mês</div>
-                        )}
-                    </div>
-                </section>
             </div>
+            )}
         </div>
     );
 }

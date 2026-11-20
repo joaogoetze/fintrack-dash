@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { ChevronDown, LogOut, Settings, WalletCards } from "lucide-react";
+import { ChevronDown, LogOut, Moon, Settings, Sun, WalletCards } from "lucide-react";
 
 import { useAuthStore } from "../../../stores/authStore";
+import { useThemeStore } from "../../../stores/themeStore";
 import InviteModal from "../InviteModal/InviteModal";
 import NotificationsPopover from "../NotificationsPopover/NotificationsPopover";
 
@@ -10,6 +11,8 @@ import "./WorkspaceSelector.css";
 
 export const WorkspaceSelector: React.FC = () => {
   const { user, workspaces, activeWorkspaceId, setActiveWorkspaceId, logout } = useAuthStore();
+  const theme = useThemeStore((state) => state.theme);
+  const setTheme = useThemeStore((state) => state.setTheme);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -86,6 +89,30 @@ export const WorkspaceSelector: React.FC = () => {
               <Settings size={16} />
               Gerenciar espaço
             </button>
+            <div className="user-menu-theme">
+              <div className="theme-segment" role="radiogroup" aria-label="Tema">
+                <button
+                  type="button"
+                  className={`theme-segment-btn ${theme === "dark" ? "is-active" : ""}`}
+                  role="radio"
+                  aria-checked={theme === "dark"}
+                  aria-label="Tema escuro"
+                  onClick={() => setTheme("dark")}
+                >
+                  <Moon size={15} />
+                </button>
+                <button
+                  type="button"
+                  className={`theme-segment-btn ${theme === "light" ? "is-active" : ""}`}
+                  role="radio"
+                  aria-checked={theme === "light"}
+                  aria-label="Tema claro"
+                  onClick={() => setTheme("light")}
+                >
+                  <Sun size={15} />
+                </button>
+              </div>
+            </div>
             <button
               type="button"
               className="user-menu-item user-menu-item-danger"

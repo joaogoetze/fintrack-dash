@@ -22,10 +22,10 @@
   gap: 6px;
 }
 .nav-link:hover {
-  background: rgba(255,255,255,0.05);
+  background: var(--hover-fill);
   color: var(--text-primary);
 }
 .nav-link.active {
   background: var(--brand-primary);
-  color: #fff;
+  color: var(--on-brand);
 }

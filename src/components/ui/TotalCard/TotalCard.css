@@ -44,7 +44,7 @@
 .total-card-divider {
   width: 1px;
   height: 28px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--divider);
 }
 
 .total-card-subitem {
@@ -61,12 +61,12 @@
 }
 
 .total-dot-paid {
-  background-color: #10b981;
-  box-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+  background-color: var(--brand-primary);
+  box-shadow: 0 0 5px color-mix(in srgb, var(--brand-primary) 50%, transparent);
 }
 
 .total-dot-unpaid {
-  background-color: #94a3b8;
+  background-color: var(--text-secondary);
 }
 
 .total-card-subvalue {
@@ -75,7 +75,7 @@
 }
 
 .text-paid {
-  color: #10b981;
+  color: var(--success-color);
 }
 
 .text-unpaid {
@@ -88,11 +88,11 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover-fill);
 }
 
 .total-card-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #059669, #10b981);
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
   transition: width 0.4s ease;
 }

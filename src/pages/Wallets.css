@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.7);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 10px 18px;
@@ -16,7 +16,7 @@
 .transfer-action-button:hover:not(:disabled) {
   border-color: var(--brand-secondary);
   color: var(--brand-secondary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover-fill);
 }
 
 .transfer-action-button:disabled {
