@@ -19,7 +19,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
   const isEdit = Boolean(initial);
 
   const [name, setName] = useState(initial?.name || "");
-  const [value, setValue] = useState(initial?.balance ?? 0);
+  const [balance, setBalance] = useState(initial?.balance ?? 0);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -36,7 +36,7 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
     e.preventDefault();
     setFieldErrors({});
 
-    const formData = { name: name.trim(), balance: value };
+    const formData = { name: name.trim(), balance };
 
     const schema = isEdit ? updateWalletSchema : createWalletSchema;
     const result = schema.safeParse(formData);
@@ -90,13 +90,13 @@ function WalletForm({ initial, onClose, onSaved }: WalletFormProps) {
       </div>
 
       <div className="form-field">
-        <label htmlFor="wallet-value">Valor</label>
+        <label htmlFor="wallet-balance">Saldo</label>
         <CurrencyInput
-          id="wallet-value"
-          value={value}
+          id="wallet-balance"
+          value={balance}
           allowNegative
           onChange={(nextValue) => {
-            setValue(nextValue);
+            setBalance(nextValue);
             clearFieldError("balance");
           }}
           aria-invalid={!!fieldErrors.balance}

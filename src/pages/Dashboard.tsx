@@ -69,7 +69,7 @@ function Dashboard() {
                         label="Saldo previsto"
                         value={summary.projectedBalance}
                         secondaryLabel="Saldo confirmado"
-                        secondaryValue={summary.balance}
+                        secondaryValue={summary.confirmedBalance}
                         type="balance"
                     />
                 </div>

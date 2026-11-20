@@ -16,7 +16,7 @@ import "./RecurringTransactions.css";
 export function RecurringTransactions() {
   const activeWorkspaceId = useAuthStore((state) => state.activeWorkspaceId);
   const [items, setItems] = useState<RecurringTransaction[]>([]);
-  const [balance, setBalance] = useState(0);
+  const [netAmount, setNetAmount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<RecurringTransaction | undefined>(undefined);
@@ -26,7 +26,7 @@ export function RecurringTransactions() {
       setLoading(true);
       const res = await getRecurringTransactions();
       setItems(res.recurringTransactions);
-      setBalance(res.balance);
+      setNetAmount(res.netAmount);
     } catch (err) {
       toastApiError(err, "Erro ao carregar transações recorrentes");
     } finally {
@@ -41,7 +41,7 @@ export function RecurringTransactions() {
   return (
     <div className="page-container">
       <div className="page-header with-total">
-        <TotalCard label="Saldo das recorrentes" value={balance} />
+        <TotalCard label="Saldo das recorrentes" value={netAmount} />
         <PrimaryButton
           buttonText="+ Recorrente"
           onClick={() => {

@@ -18,7 +18,7 @@ export const summarySchema = z.object({
   unpaidIncome: z.coerce.number().default(0),
   categoryEstimateRemaining: z.coerce.number().default(0),
   categoryEstimates: z.array(categoryEstimateSchema).default([]),
-  balance: z.coerce.number(),
+  confirmedBalance: z.coerce.number(),
   projectedBalance: z.coerce.number().default(0),
 });
 

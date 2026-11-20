@@ -38,7 +38,7 @@ export interface RecurringTransactionsResponse {
   total: number;
   totalIncomes: number;
   totalExpenses: number;
-  balance: number;
+  netAmount: number;
 }
 
 export { recurringTransactionSchema };
